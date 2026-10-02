@@ -22,12 +22,33 @@ public class BitmaskService {
     private int defaultMaxTraceSteps;
 
     public BitmaskResponseDto execute(BitmaskInput input) {
-        if (input == null || input.getNodeCount() == null || input.getCostMatrix() == null) {
-            throw new ApiException(ErrorCode.INVALID_INPUT, "Parameters 'nodeCount' and 'costMatrix' are required");
+        if (input == null) {
+            throw new ApiException(ErrorCode.INVALID_INPUT, "Input payload cannot be null");
         }
 
-        if (input.getNodeCount() > MAX_BITMASK_NODES) {
-            throw new ApiException(ErrorCode.INPUT_TOO_LARGE, String.format("Bitmask node count (%d) exceeds maximum exponential safety threshold of %d nodes", input.getNodeCount(), MAX_BITMASK_NODES));
+        if (input.getNodeCount() == null || input.getNodeCount() <= 0) {
+            throw new ApiException(ErrorCode.INVALID_INPUT, "Parameter 'nodeCount' must be a positive integer > 0");
+        }
+
+        int n = input.getNodeCount();
+        if (n > MAX_BITMASK_NODES) {
+            throw new ApiException(ErrorCode.INPUT_TOO_LARGE, String.format("Bitmask node count (%d) exceeds maximum exponential safety threshold of %d nodes", n, MAX_BITMASK_NODES));
+        }
+
+        int startNode = input.getStartNode() != null ? input.getStartNode() : 0;
+        if (startNode < 0 || startNode >= n) {
+            throw new ApiException(ErrorCode.INVALID_INPUT, String.format("Parameter 'startNode' (%d) must be within range [0, %d]", startNode, n - 1));
+        }
+
+        double[][] costMatrix = input.getCostMatrix();
+        if (costMatrix == null || costMatrix.length < n) {
+            throw new ApiException(ErrorCode.INVALID_INPUT, String.format("Parameter 'costMatrix' must contain at least %d rows", n));
+        }
+
+        for (int i = 0; i < n; i++) {
+            if (costMatrix[i] == null || costMatrix[i].length < n) {
+                throw new ApiException(ErrorCode.INVALID_INPUT, String.format("Row %d of 'costMatrix' must contain at least %d columns", i, n));
+            }
         }
 
         int maxSteps = input.getMaxTraceSteps() != null ? input.getMaxTraceSteps() : defaultMaxTraceSteps;
@@ -36,9 +57,9 @@ public class BitmaskService {
         }
 
         BitmaskInput validatedInput = BitmaskInput.builder()
-                .nodeCount(input.getNodeCount())
-                .costMatrix(input.getCostMatrix())
-                .startNode(input.getStartNode())
+                .nodeCount(n)
+                .costMatrix(costMatrix)
+                .startNode(startNode)
                 .traceEnabled(input.getTraceEnabled())
                 .maxTraceSteps(maxSteps)
                 .build();
@@ -47,3 +68,4 @@ public class BitmaskService {
         return BitmaskResponseDto.fromResult(result, bitmaskAlgorithm.getName());
     }
 }
+

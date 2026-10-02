@@ -16,7 +16,7 @@ public class BitmaskAlgorithm implements Algorithm<BitmaskInput, BitmaskResult> 
 
     @Override
     public String getName() {
-        return "Bitmask DP (Subset Route Minimization)";
+        return "Bitmask DP (Minimum Hamiltonian Route)";
     }
 
     @Override
@@ -39,11 +39,11 @@ public class BitmaskAlgorithm implements Algorithm<BitmaskInput, BitmaskResult> 
 
         List<TraceStep> trace = new ArrayList<>();
 
-        if (n <= 0 || cost == null || cost.length < n) {
+        if (n <= 0 || startNode < 0 || startNode >= n || cost == null || cost.length < n) {
             long endTime = System.nanoTime();
             return BitmaskResult.builder()
                     .nodeCount(0)
-                    .optimalCost(0.0)
+                    .optimalCost(-1.0)
                     .pathSequence(Collections.emptyList())
                     .dpStates(Collections.emptyMap())
                     .stateCount(0)
@@ -52,6 +52,23 @@ public class BitmaskAlgorithm implements Algorithm<BitmaskInput, BitmaskResult> 
                     .complexity(getComplexity())
                     .trace(trace)
                     .build();
+        }
+
+        for (int i = 0; i < n; i++) {
+            if (cost[i] == null || cost[i].length < n) {
+                long endTime = System.nanoTime();
+                return BitmaskResult.builder()
+                        .nodeCount(0)
+                        .optimalCost(-1.0)
+                        .pathSequence(Collections.emptyList())
+                        .dpStates(Collections.emptyMap())
+                        .stateCount(0)
+                        .comparisons(0)
+                        .executionTimeNanos(endTime - startTime)
+                        .complexity(getComplexity())
+                        .trace(trace)
+                        .build();
+            }
         }
 
         int fullMask = (1 << n) - 1;

@@ -36,9 +36,9 @@ export const BitmaskPage = () => {
             <Binary className="h-4 w-4" />
             <span>M3 Advanced DP — CO3</span>
           </div>
-          <h1 className="text-2xl font-bold text-slate-100">Bitmask DP Subset Route Minimization</h1>
+          <h1 className="text-2xl font-bold text-slate-100">Bitmask DP — Minimum Hamiltonian Route</h1>
           <p className="text-xs text-slate-400 mt-1">
-            Bounded exponential subset DP for small railway node sequence optimization (N ≤ 16).
+            Bounded exponential subset DP computing the minimum-cost Hamiltonian path starting at startNode and visiting all nodes exactly once (N ≤ 16, does not auto-return to startNode).
           </p>
         </div>
         <div className="flex items-center gap-3">
