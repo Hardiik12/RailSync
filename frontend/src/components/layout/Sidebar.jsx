@@ -8,10 +8,10 @@ import {
   Activity,
   FileText,
   LineChart,
-  CheckCircle2,
-  Flame,
   Terminal,
   Zap,
+  Hash,
+  Database,
 } from 'lucide-react';
 
 export const Sidebar = () => {
@@ -21,6 +21,7 @@ export const Sidebar = () => {
       items: [
         { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
         { name: 'Station Directory', path: '/operations/stations', icon: Building2 },
+        { name: 'Railway Documents', path: '/operations/documents', icon: Database, tag: 'INDEX' },
       ],
     },
     {
@@ -34,9 +35,19 @@ export const Sidebar = () => {
       ],
     },
     {
-      title: 'Future DSA Modules (CO2 - CO6)',
+      title: 'DSA Module 2: Suffix Structures (CO2)',
       items: [
-        { name: 'M2: Suffix Structures', path: '/dsa/m2', icon: FileText, tag: 'CO2', disabled: true },
+        { name: 'M2 Overview', path: '/dsa/m2', icon: FileText, tag: 'CO2' },
+        { name: 'Suffix Array', path: '/dsa/m2/suffix-array', icon: FileText, tag: 'SA' },
+        { name: 'SA-IS (Induced)', path: '/dsa/m2/sa-is', icon: Zap, tag: 'SA-IS' },
+        { name: 'Kasai LCP', path: '/dsa/m2/kasai', icon: Activity, tag: 'KASAI' },
+        { name: 'LCP Substring', path: '/dsa/m2/lcp', icon: Search, tag: 'LCP' },
+        { name: 'Suffix Automaton', path: '/dsa/m2/suffix-automaton', icon: Cpu, tag: 'SAM' },
+      ],
+    },
+    {
+      title: 'Future DSA Modules (CO3 - CO6)',
+      items: [
         { name: 'M3: Advanced DP', path: '/dsa/m3', icon: Zap, tag: 'CO3', disabled: true },
         { name: 'M4: Network Flow', path: '/dsa/m4', icon: Activity, tag: 'CO4', disabled: true },
         { name: 'M5: NP-Completeness', path: '/dsa/m5', icon: Cpu, tag: 'CO5', disabled: true },
