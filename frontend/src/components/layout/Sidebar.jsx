@@ -24,9 +24,18 @@ export const Sidebar = () => {
       ],
     },
     {
-      title: 'DSA Modules (CO1 - CO6)',
+      title: 'DSA Module 1: String Algorithms (CO1)',
       items: [
-        { name: 'M1: KMP Algorithm', path: '/dsa/m1/kmp', icon: Search, tag: 'CO1' },
+        { name: 'M1 Overview', path: '/dsa/m1', icon: Search, tag: 'CO1' },
+        { name: 'KMP Search', path: '/dsa/m1/kmp', icon: Search, tag: 'KMP' },
+        { name: 'Z-Function', path: '/dsa/m1/z-function', icon: Zap, tag: 'Z' },
+        { name: 'Rabin-Karp', path: '/dsa/m1/rabin-karp', icon: Hash, tag: 'RK' },
+        { name: 'Aho-Corasick', path: '/dsa/m1/aho-corasick', icon: Cpu, tag: 'AC' },
+      ],
+    },
+    {
+      title: 'Future DSA Modules (CO2 - CO6)',
+      items: [
         { name: 'M2: Suffix Structures', path: '/dsa/m2', icon: FileText, tag: 'CO2', disabled: true },
         { name: 'M3: Advanced DP', path: '/dsa/m3', icon: Zap, tag: 'CO3', disabled: true },
         { name: 'M4: Network Flow', path: '/dsa/m4', icon: Activity, tag: 'CO4', disabled: true },

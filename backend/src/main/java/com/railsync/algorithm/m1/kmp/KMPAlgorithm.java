@@ -83,26 +83,25 @@ public class KMPAlgorithm implements Algorithm<KMPInput, KMPResult> {
             if (isCharMatch) {
                 i++;
                 j++;
-            }
+                if (j == m) {
+                    int matchIndex = i - j;
+                    matches.add(matchIndex);
 
-            if (j == m) {
-                int matchIndex = i - j;
-                matches.add(matchIndex);
-
-                if (traceEnabled && trace.size() < maxTraceSteps) {
-                    trace.add(TraceStep.builder()
-                            .step(stepCounter++)
-                            .action("PATTERN_FOUND")
-                            .state(Map.of(
-                                    "matchIndex", matchIndex,
-                                    "textIndex", i,
-                                    "patternIndex", j
-                            ))
-                            .description(String.format("Pattern match found at text index %d", matchIndex))
-                            .build());
+                    if (traceEnabled && trace.size() < maxTraceSteps) {
+                        trace.add(TraceStep.builder()
+                                .step(stepCounter++)
+                                .action("PATTERN_FOUND")
+                                .state(Map.of(
+                                        "matchIndex", matchIndex,
+                                        "textIndex", i,
+                                        "patternIndex", j
+                                ))
+                                .description(String.format("Pattern match found at text index %d", matchIndex))
+                                .build());
+                    }
+                    j = lps[j - 1];
                 }
-                j = lps[j - 1];
-            } else if (i < n && text.charAt(i) != pattern.charAt(j)) {
+            } else {
                 if (j != 0) {
                     int prevJ = j;
                     j = lps[j - 1];
