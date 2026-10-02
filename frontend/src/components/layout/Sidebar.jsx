@@ -61,9 +61,20 @@ export const Sidebar = () => {
       ],
     },
     {
-      title: 'Future DSA Modules (CO4 - CO6)',
+      title: 'DSA Module 4: Network Flow (CO4)',
       items: [
-        { name: 'M4: Network Flow', path: '/dsa/m4', icon: Activity, tag: 'CO4', disabled: true },
+        { name: 'M4 Overview', path: '/dsa/m4', icon: Network, tag: 'CO4' },
+        { name: 'Ford-Fulkerson', path: '/dsa/m4/ford-fulkerson', icon: GitCommit, tag: 'FF' },
+        { name: 'Edmonds-Karp', path: '/dsa/m4/edmonds-karp', icon: Activity, tag: 'EK' },
+        { name: 'Dinic Algorithm', path: '/dsa/m4/dinic', icon: Layers, tag: 'DINIC' },
+        { name: 'Bipartite Matching', path: '/dsa/m4/bipartite-matching', icon: Binary, tag: 'BIP' },
+        { name: 'König Theorem', path: '/dsa/m4/konig', icon: Network, tag: 'KONIG' },
+        { name: 'Max-Flow Min-Cut', path: '/dsa/m4/max-flow-min-cut', icon: Zap, tag: 'CUT' },
+      ],
+    },
+    {
+      title: 'Future DSA Modules (CO5 - CO6)',
+      items: [
         { name: 'M5: NP-Completeness', path: '/dsa/m5', icon: Cpu, tag: 'CO5', disabled: true },
         { name: 'M6: Parallel & Random', path: '/dsa/m6', icon: LineChart, tag: 'CO6', disabled: true },
       ],

@@ -21,6 +21,13 @@ import { DamerauPage } from './pages/DamerauPage';
 import { BitmaskPage } from './pages/BitmaskPage';
 import { MatrixChainPage } from './pages/MatrixChainPage';
 import { OptimalBSTPage } from './pages/OptimalBSTPage';
+import { M4LandingPage } from './pages/M4LandingPage';
+import { FordFulkersonPage } from './pages/FordFulkersonPage';
+import { EdmondsKarpPage } from './pages/EdmondsKarpPage';
+import { DinicPage } from './pages/DinicPage';
+import { BipartiteMatchingPage } from './pages/BipartiteMatchingPage';
+import { KonigPage } from './pages/KonigPage';
+import { MaxFlowMinCutPage } from './pages/MaxFlowMinCutPage';
 
 export default function App() {
   return (
@@ -54,6 +61,15 @@ export default function App() {
           <Route path="dsa/m3/bitmask" element={<BitmaskPage />} />
           <Route path="dsa/m3/matrix-chain" element={<MatrixChainPage />} />
           <Route path="dsa/m3/optimal-bst" element={<OptimalBSTPage />} />
+
+          {/* Module 4 */}
+          <Route path="dsa/m4" element={<M4LandingPage />} />
+          <Route path="dsa/m4/ford-fulkerson" element={<FordFulkersonPage />} />
+          <Route path="dsa/m4/edmonds-karp" element={<EdmondsKarpPage />} />
+          <Route path="dsa/m4/dinic" element={<DinicPage />} />
+          <Route path="dsa/m4/bipartite-matching" element={<BipartiteMatchingPage />} />
+          <Route path="dsa/m4/konig" element={<KonigPage />} />
+          <Route path="dsa/m4/max-flow-min-cut" element={<MaxFlowMinCutPage />} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
