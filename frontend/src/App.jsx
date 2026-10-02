@@ -15,6 +15,12 @@ import { SAISPage } from './pages/SAISPage';
 import { KasaiPage } from './pages/KasaiPage';
 import { LcpPage } from './pages/LcpPage';
 import { SuffixAutomatonPage } from './pages/SuffixAutomatonPage';
+import { M3LandingPage } from './pages/M3LandingPage';
+import { LevenshteinPage } from './pages/LevenshteinPage';
+import { DamerauPage } from './pages/DamerauPage';
+import { BitmaskPage } from './pages/BitmaskPage';
+import { MatrixChainPage } from './pages/MatrixChainPage';
+import { OptimalBSTPage } from './pages/OptimalBSTPage';
 
 export default function App() {
   return (
@@ -40,6 +46,14 @@ export default function App() {
           <Route path="dsa/m2/kasai" element={<KasaiPage />} />
           <Route path="dsa/m2/lcp" element={<LcpPage />} />
           <Route path="dsa/m2/suffix-automaton" element={<SuffixAutomatonPage />} />
+
+          {/* Module 3 */}
+          <Route path="dsa/m3" element={<M3LandingPage />} />
+          <Route path="dsa/m3/levenshtein" element={<LevenshteinPage />} />
+          <Route path="dsa/m3/damerau" element={<DamerauPage />} />
+          <Route path="dsa/m3/bitmask" element={<BitmaskPage />} />
+          <Route path="dsa/m3/matrix-chain" element={<MatrixChainPage />} />
+          <Route path="dsa/m3/optimal-bst" element={<OptimalBSTPage />} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

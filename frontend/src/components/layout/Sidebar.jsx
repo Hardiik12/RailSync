@@ -12,6 +12,10 @@ import {
   Zap,
   Hash,
   Database,
+  GitCommit,
+  Binary,
+  Layers,
+  Network,
 } from 'lucide-react';
 
 export const Sidebar = () => {
@@ -46,9 +50,19 @@ export const Sidebar = () => {
       ],
     },
     {
-      title: 'Future DSA Modules (CO3 - CO6)',
+      title: 'DSA Module 3: Advanced DP (CO3)',
       items: [
-        { name: 'M3: Advanced DP', path: '/dsa/m3', icon: Zap, tag: 'CO3', disabled: true },
+        { name: 'M3 Overview', path: '/dsa/m3', icon: Zap, tag: 'CO3' },
+        { name: 'Levenshtein', path: '/dsa/m3/levenshtein', icon: GitCommit, tag: 'LEV' },
+        { name: 'Damerau-Levenshtein', path: '/dsa/m3/damerau', icon: Activity, tag: 'DAM' },
+        { name: 'Bitmask DP', path: '/dsa/m3/bitmask', icon: Binary, tag: 'MASK' },
+        { name: 'Matrix-Chain DP', path: '/dsa/m3/matrix-chain', icon: Layers, tag: 'MCM' },
+        { name: 'Optimal BST', path: '/dsa/m3/optimal-bst', icon: Network, tag: 'OBST' },
+      ],
+    },
+    {
+      title: 'Future DSA Modules (CO4 - CO6)',
+      items: [
         { name: 'M4: Network Flow', path: '/dsa/m4', icon: Activity, tag: 'CO4', disabled: true },
         { name: 'M5: NP-Completeness', path: '/dsa/m5', icon: Cpu, tag: 'CO5', disabled: true },
         { name: 'M6: Parallel & Random', path: '/dsa/m6', icon: LineChart, tag: 'CO6', disabled: true },
