@@ -2,6 +2,7 @@ package com.railsync.algorithm.m5.common;
 
 import com.railsync.algorithm.common.Complexity;
 import com.railsync.algorithm.common.TraceStep;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +22,7 @@ public class VertexCoverApproxResult {
     private int edgeCount;
     private List<List<String>> selectedEdges;
     private Map<String, Object> bound;
+    @JsonProperty("isVerifiedCover")
     private boolean isVerifiedCover;
     private List<TraceStep> trace;
     private long executionTimeNanos;
