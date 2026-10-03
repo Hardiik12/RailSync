@@ -73,21 +73,53 @@ public class M4CrossValidationTest {
     }
 
     @Test
-    @DisplayName("Cross-Validation: Max Flow Agreement on Seeded Random Flow Graphs")
+    @DisplayName("Cross-Validation: Reverse Residual Edge Rerouting Test (S->A->B->T flow cancellation)")
+    void testReverseResidualEdgeRerouting() {
+        // Classic graph requiring reverse edge traversal to reach max flow of 200
+        // S(0) -> A(1) [100], S(0) -> B(2) [100], A(1) -> B(2) [1], A(1) -> T(3) [100], B(2) -> T(3) [100]
+        List<EdgeInputDto> edges = List.of(
+                EdgeInputDto.builder().u(0).v(1).capacity(100.0).uName("S").vName("A").build(),
+                EdgeInputDto.builder().u(0).v(2).capacity(100.0).uName("S").vName("B").build(),
+                EdgeInputDto.builder().u(1).v(2).capacity(1.0).uName("A").vName("B").build(),
+                EdgeInputDto.builder().u(1).v(3).capacity(100.0).uName("A").vName("T").build(),
+                EdgeInputDto.builder().u(2).v(3).capacity(100.0).uName("B").vName("T").build()
+        );
+
+        FordFulkersonResult ffRes = fordFulkerson.execute(FordFulkersonInput.builder().vertexCount(4).source(0).sink(3).edges(edges).build());
+        EdmondsKarpResult ekRes = edmondsKarp.execute(EdmondsKarpInput.builder().vertexCount(4).source(0).sink(3).edges(edges).build());
+        DinicResult dinicRes = dinic.execute(DinicInput.builder().vertexCount(4).source(0).sink(3).edges(edges).build());
+        MaxFlowMinCutResult cutRes = maxFlowMinCut.execute(MaxFlowMinCutInput.builder().vertexCount(4).source(0).sink(3).edges(edges).build());
+
+        assertThat(ffRes.getMaxFlow()).as("Ford-Fulkerson max flow with reverse residual edge").isEqualTo(200.0);
+        assertThat(ekRes.getMaxFlow()).as("Edmonds-Karp max flow with reverse residual edge").isEqualTo(200.0);
+        assertThat(dinicRes.getMaxFlow()).as("Dinic max flow with reverse residual edge").isEqualTo(200.0);
+        assertThat(cutRes.getMaxFlow()).as("Max-Flow Min-Cut flow").isEqualTo(200.0);
+        assertThat(cutRes.getMinCutCapacity()).as("Max-Flow Min-Cut capacity").isEqualTo(200.0);
+        assertThat(cutRes.isValuesEqual()).isTrue();
+    }
+
+    @Test
+    @DisplayName("Cross-Validation: Max Flow Agreement on Seeded Random Flow Graphs (Non-DAG with Reverse Edges)")
     void crossValidateMaxFlowRandomGraphs() {
         Random rand = new Random(42);
 
-        for (int t = 0; t < 15; t++) {
+        for (int t = 0; t < 20; t++) {
             int n = 5 + rand.nextInt(5);
             int s = 0;
             int sink = n - 1;
 
+            Set<String> edgeSet = new HashSet<>();
             List<EdgeInputDto> edges = new ArrayList<>();
+
             for (int u = 0; u < n; u++) {
-                for (int v = u + 1; v < n; v++) {
-                    if (rand.nextDouble() < 0.6) {
-                        double cap = 1 + rand.nextInt(20);
-                        edges.add(EdgeInputDto.builder().u(u).v(v).capacity(cap).uName("N" + u).vName("N" + v).build());
+                for (int v = 0; v < n; v++) {
+                    if (u != v && rand.nextDouble() < 0.4) {
+                        String key = u + "->" + v;
+                        if (!edgeSet.contains(key)) {
+                            edgeSet.add(key);
+                            double cap = 1 + rand.nextInt(25);
+                            edges.add(EdgeInputDto.builder().u(u).v(v).capacity(cap).uName("N" + u).vName("N" + v).build());
+                        }
                     }
                 }
             }
@@ -95,9 +127,11 @@ public class M4CrossValidationTest {
             double ffFlow = fordFulkerson.execute(FordFulkersonInput.builder().vertexCount(n).source(s).sink(sink).edges(edges).build()).getMaxFlow();
             double ekFlow = edmondsKarp.execute(EdmondsKarpInput.builder().vertexCount(n).source(s).sink(sink).edges(edges).build()).getMaxFlow();
             double dinicFlow = dinic.execute(DinicInput.builder().vertexCount(n).source(s).sink(sink).edges(edges).build()).getMaxFlow();
+            double cutFlow = maxFlowMinCut.execute(MaxFlowMinCutInput.builder().vertexCount(n).source(s).sink(sink).edges(edges).build()).getMaxFlow();
 
             assertThat(ffFlow).as("Random trial %d: FF vs EK", t).isEqualTo(ekFlow);
             assertThat(ekFlow).as("Random trial %d: EK vs Dinic", t).isEqualTo(dinicFlow);
+            assertThat(dinicFlow).as("Random trial %d: Dinic vs MinCut", t).isEqualTo(cutFlow);
         }
     }
 

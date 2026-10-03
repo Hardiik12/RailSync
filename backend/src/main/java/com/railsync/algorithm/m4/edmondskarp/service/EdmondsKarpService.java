@@ -53,6 +53,22 @@ public class EdmondsKarpService {
             throw new ApiException(ErrorCode.INVALID_INPUT, "Parameter 'edges' cannot be null");
         }
 
+        for (int i = 0; i < input.getEdges().size(); i++) {
+            var edge = input.getEdges().get(i);
+            if (edge == null) {
+                throw new ApiException(ErrorCode.INVALID_INPUT, String.format("Edge at index %d is null", i));
+            }
+            if (edge.getU() == null || edge.getV() == null) {
+                throw new ApiException(ErrorCode.INVALID_INPUT, String.format("Edge at index %d has missing endpoints", i));
+            }
+            if (edge.getU() < 0 || edge.getU() >= n || edge.getV() < 0 || edge.getV() >= n) {
+                throw new ApiException(ErrorCode.INVALID_INPUT, String.format("Edge at index %d has endpoints (%d, %d) outside vertex range [0, %d]", i, edge.getU(), edge.getV(), n - 1));
+            }
+            if (edge.getCapacity() == null || edge.getCapacity() < 0) {
+                throw new ApiException(ErrorCode.INVALID_INPUT, String.format("Edge at index %d has invalid or negative capacity", i));
+            }
+        }
+
         int maxSteps = input.getMaxTraceSteps() != null ? input.getMaxTraceSteps() : defaultMaxTraceSteps;
         if (maxSteps > 2000) {
             throw new ApiException(ErrorCode.TRACE_LIMIT_EXCEEDED, "Requested trace steps exceed maximum allowed limit of 2000");

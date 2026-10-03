@@ -18,6 +18,13 @@ public class FlowEdge {
     private String vName;
     private FlowEdge reverseEdge;
 
+    /**
+     * Calculates residual capacity to the specified target node.
+     * Invariants:
+     * 0 <= flow <= capacity for forward edge
+     * Forward residual capacity = capacity - flow
+     * Reverse residual capacity = flow (allowing flow cancellation)
+     */
     public double residualCapacityTo(int target) {
         if (target == v) {
             return (capacity - flow) + (reverseEdge != null ? reverseEdge.flow : 0.0);
@@ -27,6 +34,10 @@ public class FlowEdge {
         throw new IllegalArgumentException("Target node " + target + " invalid for edge (" + u + "->" + v + ")");
     }
 
+    /**
+     * Pushes delta residual flow toward the specified target node.
+     * Flow cancellation on reverse edge is performed first before increasing forward flow.
+     */
     public void addResidualFlowTo(int target, double delta) {
         if (target == v) {
             if (reverseEdge != null && reverseEdge.flow > 0) {
