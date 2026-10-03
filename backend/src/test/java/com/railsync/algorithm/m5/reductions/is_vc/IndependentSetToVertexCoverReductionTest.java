@@ -2,6 +2,7 @@ package com.railsync.algorithm.m5.reductions.is_vc;
 
 import com.railsync.algorithm.m5.common.ISToVCInput;
 import com.railsync.algorithm.m5.common.ISToVCResult;
+import com.railsync.common.error.ApiException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -47,5 +48,70 @@ class IndependentSetToVertexCoverReductionTest {
         assertEquals(2, result.getVertexCoverSize());
         assertTrue(result.isVerified());
         assertEquals(List.of("B", "D"), result.getVertexCover());
+    }
+
+    @Test
+    void testUnknownVertexInIndependentSetThrowsInvalidInput() {
+        List<String> vertices = List.of("A", "B", "C");
+        List<List<String>> edges = List.of(List.of("A", "B"));
+        List<String> independentSet = List.of("A", "UNKNOWN");
+
+        ISToVCInput input = ISToVCInput.builder()
+                .vertices(vertices)
+                .edges(edges)
+                .independentSet(independentSet)
+                .build();
+
+        ApiException ex = assertThrows(ApiException.class, () -> service.execute(input));
+        assertTrue(ex.getMessage().contains("not present in graph"));
+    }
+
+    @Test
+    void testDuplicateVertexInIndependentSetThrowsInvalidInput() {
+        List<String> vertices = List.of("A", "B", "C");
+        List<List<String>> edges = List.of(List.of("A", "B"));
+        List<String> independentSet = List.of("A", "A");
+
+        ISToVCInput input = ISToVCInput.builder()
+                .vertices(vertices)
+                .edges(edges)
+                .independentSet(independentSet)
+                .build();
+
+        ApiException ex = assertThrows(ApiException.class, () -> service.execute(input));
+        assertTrue(ex.getMessage().contains("Duplicate vertex"));
+    }
+
+    @Test
+    void testInternalEdgeInIndependentSetThrowsInvalidInput() {
+        List<String> vertices = List.of("A", "B", "C");
+        List<List<String>> edges = List.of(List.of("A", "B"), List.of("B", "C"));
+        List<String> independentSet = List.of("A", "B"); // Internal edge A-B!
+
+        ISToVCInput input = ISToVCInput.builder()
+                .vertices(vertices)
+                .edges(edges)
+                .independentSet(independentSet)
+                .build();
+
+        ApiException ex = assertThrows(ApiException.class, () -> service.execute(input));
+        assertTrue(ex.getMessage().contains("not a valid independent set"));
+    }
+
+    @Test
+    void testMismatchedIndependentSetSizeThrowsInvalidInput() {
+        List<String> vertices = List.of("A", "B", "C");
+        List<List<String>> edges = List.of(List.of("A", "B"));
+        List<String> independentSet = List.of("A", "C");
+
+        ISToVCInput input = ISToVCInput.builder()
+                .vertices(vertices)
+                .edges(edges)
+                .independentSetSize(5) // Mismatched size!
+                .independentSet(independentSet)
+                .build();
+
+        ApiException ex = assertThrows(ApiException.class, () -> service.execute(input));
+        assertTrue(ex.getMessage().contains("does not match actual independent set size"));
     }
 }

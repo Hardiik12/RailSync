@@ -31,7 +31,7 @@ public class IndependentSetToVertexCoverReduction implements Algorithm<ISToVCInp
 
         List<String> vertices = input.getVertices() != null ? input.getVertices() : new ArrayList<>();
         List<List<String>> edges = input.getEdges() != null ? input.getEdges() : new ArrayList<>();
-        int targetISSize = input.getIndependentSetSize() != null ? input.getIndependentSetSize() : 0;
+        Integer inputISSize = input.getIndependentSetSize();
         List<String> providedIS = input.getIndependentSet();
 
         if (vertices.isEmpty()) {
@@ -48,6 +48,43 @@ public class IndependentSetToVertexCoverReduction implements Algorithm<ISToVCInp
             }
         }
 
+        List<String> independentSet = new ArrayList<>();
+        if (providedIS != null) {
+            // Validation 1 & 2: Check for unknown vertices and duplicates
+            Set<String> seenIS = new HashSet<>();
+            for (String v : providedIS) {
+                if (v == null || !vertexSet.contains(v)) {
+                    throw new ApiException(ErrorCode.INVALID_INPUT, "Independent set vertex not present in graph: " + v);
+                }
+                if (!seenIS.add(v)) {
+                    throw new ApiException(ErrorCode.INVALID_INPUT, "Duplicate vertex in supplied independent set: " + v);
+                }
+                independentSet.add(v);
+            }
+
+            // Validation 4: Validate independentSetSize against provided set
+            if (inputISSize != null && inputISSize != providedIS.size()) {
+                throw new ApiException(ErrorCode.INVALID_INPUT,
+                        "Supplied independentSetSize (" + inputISSize + ") does not match actual independent set size (" + providedIS.size() + ")");
+            }
+
+            // Validation 3: Check for internal edges in provided independent set
+            Set<String> isSet = new HashSet<>(independentSet);
+            for (List<String> edge : edges) {
+                String u = edge.get(0);
+                String v = edge.get(1);
+                if (isSet.contains(u) && isSet.contains(v)) {
+                    throw new ApiException(ErrorCode.INVALID_INPUT,
+                            "Supplied set is not a valid independent set: contains internal edge between " + u + " and " + v);
+                }
+            }
+        } else {
+            // Find a maximum independent set by brute force or greedy search for visualization
+            independentSet = findMaximumIndependentSet(vertices, edges, opCount);
+        }
+
+        int targetISSize = inputISSize != null ? inputISSize : independentSet.size();
+
         boolean traceEnabled = Boolean.TRUE.equals(input.getTraceEnabled());
         int maxTraceSteps = input.getMaxTraceSteps() != null ? input.getMaxTraceSteps() : 50;
         List<TraceStep> trace = new ArrayList<>();
@@ -59,18 +96,6 @@ public class IndependentSetToVertexCoverReduction implements Algorithm<ISToVCInp
                     .state(Map.of("vertices", vertices.size(), "independentSetSize", targetISSize))
                     .description("Initiated Independent Set to Vertex Cover reduction for " + vertices.size() + " vertices")
                     .build());
-        }
-
-        List<String> independentSet = new ArrayList<>();
-        if (providedIS != null && !providedIS.isEmpty()) {
-            for (String v : providedIS) {
-                if (vertexSet.contains(v)) {
-                    independentSet.add(v);
-                }
-            }
-        } else {
-            // Find a maximum independent set by brute force or greedy search for visualization
-            independentSet = findMaximumIndependentSet(vertices, edges, opCount);
         }
 
         Set<String> isSet = new HashSet<>(independentSet);
