@@ -21,7 +21,7 @@ public class VertexCoverTwoApproximation implements Algorithm<VertexCoverApproxI
 
     @Override
     public Complexity getComplexity() {
-        return new Complexity("O(V + E)", "O(V + E)");
+        return new Complexity("O(V * E)", "O(V + E)");
     }
 
     @Override

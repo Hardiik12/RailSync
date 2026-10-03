@@ -28,7 +28,7 @@ public class ThreeSATToCliqueReduction implements Algorithm<SATInput, CliqueRedu
 
     @Override
     public Complexity getComplexity() {
-        return new Complexity("O(m^2)", "O(m)");
+        return new Complexity("O(m^2)", "O(m^2)");
     }
 
     @Override
