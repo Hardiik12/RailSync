@@ -162,7 +162,7 @@ export const ThreeSatToCliquePage = () => {
                 </div>
                 <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
                   <span className="text-slate-400 block text-[10px]">SPACE</span>
-                  <span className="text-purple-400 text-sm font-bold">{result.complexity?.spaceComplexity || 'O(m)'}</span>
+                  <span className="text-purple-400 text-sm font-bold">{result.complexity?.spaceComplexity || 'O(m^2)'}</span>
                 </div>
               </div>
             </div>

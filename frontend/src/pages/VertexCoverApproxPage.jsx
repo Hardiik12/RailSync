@@ -146,7 +146,7 @@ export const VertexCoverApproxPage = () => {
               <div className="grid grid-cols-2 gap-4 text-xs font-mono">
                 <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
                   <span className="text-slate-400 block text-[10px]">TIME</span>
-                  <span className="text-purple-400 text-sm font-bold">{result.complexity?.timeComplexity || 'O(V + E)'}</span>
+                  <span className="text-purple-400 text-sm font-bold">{result.complexity?.timeComplexity || 'O(V * E)'}</span>
                 </div>
                 <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
                   <span className="text-slate-400 block text-[10px]">SPACE</span>
