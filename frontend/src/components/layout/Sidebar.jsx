@@ -16,6 +16,9 @@ import {
   Binary,
   Layers,
   Network,
+  CheckSquare,
+  Target,
+  ShieldCheck,
 } from 'lucide-react';
 
 export const Sidebar = () => {
@@ -73,9 +76,20 @@ export const Sidebar = () => {
       ],
     },
     {
-      title: 'Future DSA Modules (CO5 - CO6)',
+      title: 'DSA Module 5: NP-Completeness (CO5)',
       items: [
-        { name: 'M5: NP-Completeness', path: '/dsa/m5', icon: Cpu, tag: 'CO5', disabled: true },
+        { name: 'M5 Overview', path: '/dsa/m5', icon: Cpu, tag: 'CO5' },
+        { name: 'SAT Solver', path: '/dsa/m5/sat', icon: CheckSquare, tag: 'SAT' },
+        { name: '3-SAT Solver', path: '/dsa/m5/3sat', icon: Target, tag: '3SAT' },
+        { name: '3-SAT → CLIQUE', path: '/dsa/m5/3sat-to-clique', icon: GitCommit, tag: 'RED1' },
+        { name: 'CLIQUE → IS', path: '/dsa/m5/clique-to-independent-set', icon: Layers, tag: 'RED2' },
+        { name: 'IS → Vertex Cover', path: '/dsa/m5/independent-set-to-vertex-cover', icon: ShieldCheck, tag: 'RED3' },
+        { name: 'VC 2-Approx', path: '/dsa/m5/vertex-cover-2approx', icon: Cpu, tag: '2APX' },
+      ],
+    },
+    {
+      title: 'Future DSA Modules (CO6)',
+      items: [
         { name: 'M6: Parallel & Random', path: '/dsa/m6', icon: LineChart, tag: 'CO6', disabled: true },
       ],
     },

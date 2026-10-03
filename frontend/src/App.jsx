@@ -28,6 +28,13 @@ import { DinicPage } from './pages/DinicPage';
 import { BipartiteMatchingPage } from './pages/BipartiteMatchingPage';
 import { KonigPage } from './pages/KonigPage';
 import { MaxFlowMinCutPage } from './pages/MaxFlowMinCutPage';
+import { M5LandingPage } from './pages/M5LandingPage';
+import { SatPage } from './pages/SatPage';
+import { ThreeSatPage } from './pages/ThreeSatPage';
+import { ThreeSatToCliquePage } from './pages/ThreeSatToCliquePage';
+import { CliqueToISPage } from './pages/CliqueToISPage';
+import { ISToVCPage } from './pages/ISToVCPage';
+import { VertexCoverApproxPage } from './pages/VertexCoverApproxPage';
 
 export default function App() {
   return (
@@ -70,6 +77,15 @@ export default function App() {
           <Route path="dsa/m4/bipartite-matching" element={<BipartiteMatchingPage />} />
           <Route path="dsa/m4/konig" element={<KonigPage />} />
           <Route path="dsa/m4/max-flow-min-cut" element={<MaxFlowMinCutPage />} />
+
+          {/* Module 5 */}
+          <Route path="dsa/m5" element={<M5LandingPage />} />
+          <Route path="dsa/m5/sat" element={<SatPage />} />
+          <Route path="dsa/m5/3sat" element={<ThreeSatPage />} />
+          <Route path="dsa/m5/3sat-to-clique" element={<ThreeSatToCliquePage />} />
+          <Route path="dsa/m5/clique-to-independent-set" element={<CliqueToISPage />} />
+          <Route path="dsa/m5/independent-set-to-vertex-cover" element={<ISToVCPage />} />
+          <Route path="dsa/m5/vertex-cover-2approx" element={<VertexCoverApproxPage />} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

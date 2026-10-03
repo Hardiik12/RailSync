@@ -1,11 +1,15 @@
 package com.railsync.algorithm.common;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Complexity {
-    private final String time;
-    private final String space;
+    private String time;
+    private String space;
 }
