@@ -7,7 +7,7 @@ export const Topbar = () => {
       <div className="flex items-center gap-3">
         <span className="px-2.5 py-1 rounded-full text-[11px] font-mono bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 flex items-center gap-1.5">
           <Activity className="h-3 w-3" />
-          Academic Railway Operations Simulation
+          Railway Operations Simulation
         </span>
       </div>
 

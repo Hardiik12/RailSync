@@ -44,7 +44,7 @@ export const DashboardPage = () => {
       <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs flex items-start gap-3">
         <ShieldAlert className="h-5 w-5 shrink-0 text-amber-400 mt-0.5" />
         <div>
-          <span className="font-semibold text-amber-200">Academic Simulation Notice:</span>
+          <span className="font-semibold text-amber-200">Simulation Notice:</span>
           <p className="text-amber-300/90 mt-0.5">
             The dataset seeded in this platform is synthetic and deterministic. 
             Station codes and names serve as structured domain inputs for algorithm demonstrations (such as KMP string search and flow networks) and do not reflect live Indian Railways operational infrastructure.

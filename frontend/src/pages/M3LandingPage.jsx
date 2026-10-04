@@ -41,7 +41,7 @@ export const M3LandingPage = () => {
       complexityTime: 'O(n³)',
       complexitySpace: 'O(n²)',
       icon: Layers,
-      useCase: 'Academic model for ordering compatible railway data operations.',
+      useCase: 'Model for ordering compatible railway data operations.',
       highlights: ['Interval DP dp[i][j]', 'Optimal parenthesization', 'Split table reconstruction'],
     },
     {
