@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { runLevenshtein } from '../api/m3Api';
-import { GitCommit, Play } from 'lucide-react';
+import { runLevenshtein, correctStationName } from '../api/m3Api';
+import { GitCommit, Play, Building2, Search, CheckCircle2 } from 'lucide-react';
 
 export const LevenshteinPage = () => {
   const [source, setSource] = useState('NEW_DELI_JN');
@@ -8,6 +8,38 @@ export const LevenshteinPage = () => {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // M3 Station Correction Adapter State
+  const [stQuery, setStQuery] = useState('Vijayawda');
+  const [stAlgo, setStAlgo] = useState('LEVENSHTEIN');
+  const [stOrigin, setStOrigin] = useState('ALL');
+  const [maxCandidates, setMaxCandidates] = useState(5);
+  const [stLoading, setStLoading] = useState(false);
+  const [stResults, setStResults] = useState(null);
+  const [stError, setStError] = useState(null);
+
+  const handleStationCorrection = async (e) => {
+    e?.preventDefault();
+    if (!stQuery) return;
+    setStLoading(true);
+    setStError(null);
+    try {
+      const res = await correctStationName({
+        query: stQuery,
+        algorithm: stAlgo,
+        dataOriginFilter: stOrigin,
+        maxCandidates: parseInt(maxCandidates, 10),
+        traceEnabled: false,
+      });
+      if (res.success && res.data) {
+        setStResults(res.data);
+      }
+    } catch (err) {
+      setStError(err.message || 'Station correction failed');
+    } finally {
+      setStLoading(false);
+    }
+  };
 
   const handleRun = async (e) => {
     e?.preventDefault();
@@ -125,6 +157,117 @@ export const LevenshteinPage = () => {
           </div>
         </div>
       )}
+
+      {/* M3 Station Name Fuzzy Correction Adapter Component */}
+      <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-6 space-y-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b border-slate-800">
+          <div>
+            <div className="flex items-center gap-2 text-xs font-mono text-cyan-400">
+              <Building2 className="h-4 w-4" />
+              <span>M3 RAILWAY DOMAIN ADAPTER</span>
+            </div>
+            <h2 className="text-lg font-bold text-slate-100 mt-1">Station Name Fuzzy Typo Correction</h2>
+            <p className="text-xs text-slate-400">
+              Ranks PostgreSQL station candidates using Levenshtein / Damerau-Levenshtein edit distance algorithms.
+            </p>
+          </div>
+        </div>
+
+        <form onSubmit={handleStationCorrection} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+          <div className="space-y-1.5">
+            <label className="text-xs font-mono text-slate-300">Typed Station Query</label>
+            <input
+              type="text"
+              value={stQuery}
+              onChange={(e) => setStQuery(e.target.value)}
+              placeholder="e.g. Vijayawda or Muambai"
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 font-mono focus:outline-none focus:border-cyan-500"
+              required
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-xs font-mono text-slate-300">Edit Distance Algorithm</label>
+            <select
+              value={stAlgo}
+              onChange={(e) => setStAlgo(e.target.value)}
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 font-mono focus:outline-none focus:border-cyan-500"
+            >
+              <option value="LEVENSHTEIN">Levenshtein Distance</option>
+              <option value="DAMERAU_LEVENSHTEIN">Damerau-Levenshtein (Transpositions)</option>
+            </select>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-xs font-mono text-slate-300">Data Origin Filter</label>
+            <select
+              value={stOrigin}
+              onChange={(e) => setStOrigin(e.target.value)}
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 font-mono focus:outline-none focus:border-cyan-500"
+            >
+              <option value="ALL">ALL (Public + Synthetic)</option>
+              <option value="PUBLIC_DATA">PUBLIC_DATA Only</option>
+              <option value="SYNTHETIC">SYNTHETIC Only</option>
+            </select>
+          </div>
+
+          <button
+            type="submit"
+            disabled={stLoading}
+            className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/20 text-xs font-semibold font-mono transition-all disabled:opacity-50"
+          >
+            <Search className="h-4 w-4" />
+            <span>{stLoading ? 'Finding Candidates...' : 'Find Candidates'}</span>
+          </button>
+        </form>
+
+        {stError && <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-mono">{stError}</div>}
+
+        {stResults && (
+          <div className="space-y-4 pt-2">
+            <div className="flex items-center justify-between text-xs font-mono text-slate-400">
+              <span>Evaluated {stResults.totalStationsEvaluated} station records:</span>
+              <span className="text-cyan-400 font-bold">
+                Algorithm: {stResults.algorithm} · Time: {(stResults.executionTimeNanos / 1e6).toFixed(2)} ms
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {stResults.candidates?.map((cand, idx) => (
+                <div key={idx} className="p-4 rounded-lg bg-slate-950 border border-slate-800/80 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-mono font-bold text-cyan-400">{cand.station?.stationCode}</span>
+                      <span className="text-xs font-semibold text-slate-100">{cand.station?.name}</span>
+                    </div>
+                    <span className="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-xs font-mono font-bold">
+                      Dist: {cand.distance}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between text-xs font-mono text-slate-400">
+                    <span>Matched on: <span className="text-slate-200 font-semibold">{cand.matchedField}</span></span>
+                    <span
+                      className={`text-[10px] px-2 py-0.5 rounded border ${
+                        cand.dataOrigin === 'PUBLIC_DATA'
+                          ? 'bg-purple-500/10 text-purple-400 border-purple-500/30'
+                          : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                      }`}
+                    >
+                      {cand.dataOrigin || 'SYNTHETIC'}
+                    </span>
+                  </div>
+
+                  <div className="text-[11px] text-slate-500 font-mono">
+                    City: {cand.station?.city} · State: {cand.station?.state}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
+

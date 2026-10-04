@@ -19,3 +19,14 @@ export const runMatrixChain = async ({ dimensions, traceEnabled = true, maxTrace
 export const runOptimalBST = async ({ keys, frequencies, traceEnabled = true, maxTraceSteps = 500 }) => {
   return apiClient.post('/m3/optimal-bst', { keys, frequencies, traceEnabled, maxTraceSteps });
 };
+
+export const correctStationName = async ({ query, algorithm = 'LEVENSHTEIN', dataOriginFilter = 'ALL', maxCandidates = 5, traceEnabled = false }) => {
+  return apiClient.post('/m3/stations/correct', {
+    query,
+    algorithm,
+    dataOriginFilter,
+    maxCandidates,
+    traceEnabled,
+  });
+};
+

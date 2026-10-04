@@ -137,18 +137,38 @@ The frontend control center is built with **React 18**, **Vite 6**, **Tailwind C
 
 ---
 
+## 📊 Data Model & Origin Hierarchy
+
+RailSync maintains strict segregation between synthetic baseline entities and public snapshot records:
+
+- **PUBLIC_DATA:** Imported snapshot records from validated public GeoJSON/JSON data sources (e.g., `OPEN_RAIL_2026`). Features coordinates, zone information, and original data source metadata.
+- **SYNTHETIC:** Deterministic synthetic station and network topology records generated for academic simulation and benchmarking.
+
+*Note: Railway network edges between public stations remain explicitly tagged as `SYNTHETIC` unless backed by an authoritative track topology dataset.*
+
+---
+
 ## 🖥️ Browser Control Center Navigation
 
 Access the following routes in your web browser (`http://localhost:5173`):
 
 - **Platform Dashboard:** `http://localhost:5173/dashboard`
 - **Station Directory:** `http://localhost:5173/operations/stations`
+- **Railway Network & Flow:** `http://localhost:5173/operations/network`
 - **Railway Documents Index:** `http://localhost:5173/operations/documents`
-- **Module 1 (String Algorithms):** `http://localhost:5173/dsa/m1`
-- **Module 2 (Suffix Structures):** `http://localhost:5173/dsa/m2`
-- **Module 3 (Advanced DP):** `http://localhost:5173/dsa/m3`
-- **Module 4 (Network Flow):** `http://localhost:5173/dsa/m4`
-- **Module 5 (NP-Completeness & Approximation):** `http://localhost:5173/dsa/m5`
+- **Module 1 (String Algorithms):** `http://localhost:5173/dsa/m1` (`/kmp`, `/z-function`, `/rabin-karp`, `/aho-corasick`)
+- **Module 2 (Suffix Structures):** `http://localhost:5173/dsa/m2` (`/suffix-array`, `/sa-is`, `/lcp`, `/kasai`, `/suffix-automaton`)
+- **Module 3 (Advanced DP):** `http://localhost:5173/dsa/m3` (`/levenshtein`, `/damerau`, `/bitmask`, `/matrix-chain`, `/optimal-bst`)
+- **Module 4 (Network Flow):** `http://localhost:5173/dsa/m4` (`/ford-fulkerson`, `/edmonds-karp`, `/dinic`, `/bipartite-matching`, `/konig`, `/max-flow-min-cut`)
+- **Module 5 (NP-Completeness & Approximation):** `http://localhost:5173/dsa/m5` (`/sat`, `/3sat`, `/3sat-to-clique`, `/clique-to-independent-set`, `/independent-set-to-vertex-cover`, `/vertex-cover-2approx`)
+
+---
+
+## 🛑 Scope & Project Limitations
+
+1. **Academic Simulation:** RailSync is an academic simulation and algorithmic decision-support platform, not an active railway signaling or dispatch controller.
+2. **DSA Scope:** Modules M1 through M5 contain 100% manual Java implementations. Module M6 (Parallel & Randomized) is explicitly out of scope and absent.
+3. **No External Live API Dependency:** System operates deterministically offline using PostgreSQL synthetic and public snapshot records.
 
 ---
 
@@ -164,3 +184,4 @@ Authoritative documentation is located in the `docs/` folder:
 - [`06-ui-architecture.md`](docs/06-ui-architecture.md) — React Frontend Control Center Design
 - [`07-testing-strategy.md`](docs/07-testing-strategy.md) — Backend & Frontend Test Suite Guidelines
 - [`08-development-roadmap.md`](docs/08-development-roadmap.md) — Development Phases & Milestone Progress
+

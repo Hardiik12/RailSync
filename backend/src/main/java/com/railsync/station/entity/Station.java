@@ -38,6 +38,19 @@ public class Station {
     @Column(name = "status", nullable = false, length = 30)
     private String status;
 
+    @Column(name = "data_origin", nullable = false, length = 50)
+    @Builder.Default
+    private String dataOrigin = "SYNTHETIC";
+
+    @Column(name = "source_dataset", length = 150)
+    private String sourceDataset;
+
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;

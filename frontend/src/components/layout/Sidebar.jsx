@@ -28,6 +28,7 @@ export const Sidebar = () => {
       items: [
         { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
         { name: 'Station Directory', path: '/operations/stations', icon: Building2 },
+        { name: 'Railway Network', path: '/operations/network', icon: Network, tag: 'TOPOLOGY' },
         { name: 'Railway Documents', path: '/operations/documents', icon: Database, tag: 'INDEX' },
       ],
     },

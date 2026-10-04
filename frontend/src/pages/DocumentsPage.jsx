@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { fetchDocuments, searchDocuments, analyzeDocumentRepeatedSubstrings } from '../api/m2Api';
-import { Database, Search, FileText, Activity, CheckCircle2, XCircle } from 'lucide-react';
+import { fetchDocuments, searchDocuments, analyzeDocumentRepeatedSubstrings, indexStationDocuments } from '../api/m2Api';
+import { Database, Search, FileText, Activity, CheckCircle2, Layers, RefreshCw } from 'lucide-react';
 
 export const DocumentsPage = () => {
   const [documents, setDocuments] = useState([]);
   const [query, setQuery] = useState('Train 12951');
   const [searchResults, setSearchResults] = useState(null);
   const [analysisResults, setAnalysisResults] = useState(null);
+  const [indexResult, setIndexResult] = useState(null);
   const [loadingDocs, setLoadingDocs] = useState(false);
   const [searching, setSearching] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
+  const [indexing, setIndexing] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -25,6 +27,22 @@ export const DocumentsPage = () => {
       setError('Failed to fetch documents from database');
     } finally {
       setLoadingDocs(false);
+    }
+  };
+
+  const handleIndexStations = async () => {
+    setIndexing(true);
+    setError(null);
+    try {
+      const res = await indexStationDocuments();
+      if (res.success && res.data) {
+        setIndexResult(res.data);
+        await loadDocs();
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to index station documents');
+    } finally {
+      setIndexing(false);
     }
   };
 
@@ -64,20 +82,65 @@ export const DocumentsPage = () => {
           </div>
           <h1 className="text-2xl font-bold text-slate-100">Railway Document Search & Similarity</h1>
           <p className="text-xs text-slate-400 mt-1">
-            Synthetic document corpus indexed using Suffix Automaton (SAM) and Kasai LCP algorithms.
+            Deterministic station documents and operational logs indexed using Suffix Automaton (SAM) and Kasai LCP algorithms.
           </p>
         </div>
-        <button
-          onClick={handleAnalyzeCorpus}
-          disabled={analyzing}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20 text-xs font-semibold transition-all disabled:opacity-50"
-        >
-          <Activity className="h-4 w-4" />
-          <span>{analyzing ? 'Analyzing Corpus...' : 'Detect Duplicated Substrings'}</span>
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleIndexStations}
+            disabled={indexing}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/20 text-xs font-semibold transition-all disabled:opacity-50"
+          >
+            <Layers className="h-4 w-4" />
+            <span>{indexing ? 'Indexing Public Stations...' : 'Index Station Documents'}</span>
+          </button>
+          <button
+            onClick={handleAnalyzeCorpus}
+            disabled={analyzing}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20 text-xs font-semibold transition-all disabled:opacity-50"
+          >
+            <Activity className="h-4 w-4" />
+            <span>{analyzing ? 'Analyzing Corpus...' : 'Detect Duplicated Substrings'}</span>
+          </button>
+        </div>
       </div>
 
       {error && <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-mono">{error}</div>}
+
+      {/* Station Indexing Result Banner */}
+      {indexResult && (
+        <div className="p-5 rounded-xl bg-slate-900/90 border border-cyan-500/30 space-y-3 font-mono">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4" /> Station Document Indexing Result
+            </span>
+            <span className="text-[11px] text-slate-400">Source: {indexResult.source}</span>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 text-xs">
+            <div className="bg-slate-950 p-2.5 rounded border border-slate-800">
+              <span className="text-[10px] text-slate-500 block">Records Read</span>
+              <span className="text-slate-100 font-bold">{indexResult.recordsConsidered}</span>
+            </div>
+            <div className="bg-slate-950 p-2.5 rounded border border-slate-800">
+              <span className="text-[10px] text-slate-500 block">Docs Created</span>
+              <span className="text-emerald-400 font-bold">{indexResult.documentsCreated}</span>
+            </div>
+            <div className="bg-slate-950 p-2.5 rounded border border-slate-800">
+              <span className="text-[10px] text-slate-500 block">Docs Updated</span>
+              <span className="text-cyan-400 font-bold">{indexResult.documentsUpdated}</span>
+            </div>
+            <div className="bg-slate-950 p-2.5 rounded border border-slate-800">
+              <span className="text-[10px] text-slate-500 block">Skipped</span>
+              <span className="text-amber-400 font-bold">{indexResult.skippedRecords}</span>
+            </div>
+            <div className="bg-slate-950 p-2.5 rounded border border-slate-800">
+              <span className="text-[10px] text-slate-500 block">Duration</span>
+              <span className="text-slate-300 font-bold">{indexResult.durationMillis} ms</span>
+            </div>
+          </div>
+        </div>
+      )}
+
 
       {/* Substring Search Form */}
       <form onSubmit={handleSearch} className="bg-slate-900/80 border border-slate-800 rounded-xl p-6 space-y-4">

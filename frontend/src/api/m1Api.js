@@ -37,3 +37,14 @@ export const runAhoCorasickSearch = async ({ text, keywords, traceEnabled = true
     maxTraceSteps,
   });
 };
+
+export const searchRailwayStations = async ({ query, algorithm = 'KMP', dataOriginFilter = 'ALL', limit = 10, traceEnabled = false }) => {
+  return apiClient.post('/m1/stations/search', {
+    query,
+    algorithm,
+    dataOriginFilter,
+    limit,
+    traceEnabled,
+  });
+};
+
