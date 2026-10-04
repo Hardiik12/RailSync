@@ -14,6 +14,8 @@ import {
   Activity,
 } from 'lucide-react';
 import axios from 'axios';
+import { DataOriginBadge } from '../components/common/DataOriginBadge';
+
 
 export function NetworkPage() {
   const [networkData, setNetworkData] = useState(null);
@@ -108,39 +110,39 @@ export function NetworkPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/80 pb-5">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#263449] pb-5">
         <div>
-          <div className="flex items-center gap-2.5 mb-1.5">
-            <div className="h-8 w-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+          <div className="flex items-center gap-2 mb-1">
+            <div className="h-7 w-7 rounded bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400">
               <Network className="h-4 w-4" />
             </div>
-            <h1 className="text-xl font-bold text-slate-100 tracking-tight">
-              Railway Network Operations & Topology
+            <h1 className="text-xl font-bold text-[#F1F5F9] tracking-tight">
+              Railway Network Analysis
             </h1>
           </div>
-          <p className="text-xs text-slate-400">
-            Explicit graph representation connecting public and synthetic railway stations for Module M4 flow algorithms.
+          <p className="text-xs text-[#94A3B8]">
+            Graph network model connecting railway station nodes for Module M4 network flow algorithms.
           </p>
         </div>
 
         <button
           onClick={() => setShowAddEdge(!showAddEdge)}
-          className="px-3.5 py-2 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-xs font-semibold flex items-center gap-2 transition"
+          className="px-3.5 py-2 rounded-lg bg-[#172033] hover:bg-slate-800 text-teal-400 border border-[#263449] text-xs font-semibold flex items-center gap-2 transition"
         >
           <Plus className="h-4 w-4" />
-          {showAddEdge ? 'Close Add Form' : 'Add Directed Edge'}
+          {showAddEdge ? 'Close Form' : 'Add Directed Edge'}
         </button>
       </div>
 
       {/* Notice Banner */}
-      <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 text-xs text-slate-300 flex items-start gap-3">
-        <ShieldCheck className="h-5 w-5 text-cyan-400 shrink-0 mt-0.5" />
+      <div className="p-4 rounded-xl bg-[#111827] border border-[#263449] text-xs text-[#94A3B8] flex items-start gap-3">
+        <ShieldCheck className="h-5 w-5 text-teal-400 shrink-0 mt-0.5" />
         <div>
-          <span className="font-semibold text-slate-200">Hybrid Network Topology Model:</span>
-          <p className="text-slate-400 mt-0.5">
-            Station nodes may originate from <code className="text-emerald-400 font-mono">PUBLIC_DATA</code> or <code className="text-cyan-400 font-mono">SYNTHETIC</code> datasets. Directed graph edges represent explicitly defined capacity constraints (<code className="text-amber-400 font-mono">SYNTHETIC</code>) and do not infer connectivity from geographic proximity alone.
+          <span className="font-semibold text-[#F1F5F9]">Network Graph Capacity Model:</span>
+          <p className="text-[#94A3B8] mt-0.5">
+            Station nodes combine <code className="text-teal-400 font-mono">PUBLIC DATA</code> and <code className="text-[#94A3B8] font-mono">SYNTHETIC</code> records. Graph edges specify explicit track throughput capacity constraints for network flow optimization.
           </p>
         </div>
       </div>

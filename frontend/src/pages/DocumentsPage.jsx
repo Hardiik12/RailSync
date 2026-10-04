@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchDocuments, searchDocuments, analyzeDocumentRepeatedSubstrings, indexStationDocuments } from '../api/m2Api';
-import { Database, Search, FileText, Activity, CheckCircle2, Layers, RefreshCw } from 'lucide-react';
+import { Database, Search, FileText, Activity, CheckCircle2, Layers } from 'lucide-react';
 
 export const DocumentsPage = () => {
   const [documents, setDocuments] = useState([]);
@@ -72,96 +72,99 @@ export const DocumentsPage = () => {
   };
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-8">
+    <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#263449] pb-5">
         <div>
-          <div className="flex items-center gap-2 text-cyan-400 font-mono text-xs mb-1">
-            <Database className="h-4 w-4" />
-            <span>Railway Operational Database</span>
-          </div>
-          <h1 className="text-2xl font-bold text-slate-100">Railway Document Search & Similarity</h1>
-          <p className="text-xs text-slate-400 mt-1">
-            Deterministic station documents and operational logs indexed using Suffix Automaton (SAM) and Kasai LCP algorithms.
+          <h1 className="text-xl md:text-2xl font-semibold text-[#F1F5F9] tracking-tight">
+            Railway Documents
+          </h1>
+          <p className="text-sm text-[#94A3B8] mt-1">
+            Indexed operational logs, timetables, and station descriptions for substring search and analysis.
           </p>
         </div>
         <div className="flex items-center gap-3">
           <button
             onClick={handleIndexStations}
             disabled={indexing}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/20 text-xs font-semibold transition-all disabled:opacity-50"
+            className="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-[#172033] hover:bg-[#1f2c47] border border-[#263449] text-sm text-[#F1F5F9] font-medium transition-colors disabled:opacity-50"
           >
-            <Layers className="h-4 w-4" />
+            <Layers className="h-4 w-4 text-teal-400" />
             <span>{indexing ? 'Indexing Public Stations...' : 'Index Station Documents'}</span>
           </button>
           <button
             onClick={handleAnalyzeCorpus}
             disabled={analyzing}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20 text-xs font-semibold transition-all disabled:opacity-50"
+            className="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-[#172033] hover:bg-[#1f2c47] border border-[#263449] text-sm text-[#F1F5F9] font-medium transition-colors disabled:opacity-50"
           >
-            <Activity className="h-4 w-4" />
+            <Activity className="h-4 w-4 text-emerald-400" />
             <span>{analyzing ? 'Analyzing Corpus...' : 'Detect Duplicated Substrings'}</span>
           </button>
         </div>
       </div>
 
-      {error && <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-mono">{error}</div>}
+      {error && (
+        <div className="p-4 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs">
+          {error}
+        </div>
+      )}
 
       {/* Station Indexing Result Banner */}
       {indexResult && (
-        <div className="p-5 rounded-xl bg-slate-900/90 border border-cyan-500/30 space-y-3 font-mono">
+        <div className="p-5 rounded-lg bg-[#111827] border border-[#263449] space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
+            <span className="text-xs font-semibold text-teal-400 uppercase tracking-wider flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4" /> Station Document Indexing Result
             </span>
-            <span className="text-[11px] text-slate-400">Source: {indexResult.source}</span>
+            <span className="text-xs text-[#94A3B8]">Source: {indexResult.source}</span>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3 text-xs">
-            <div className="bg-slate-950 p-2.5 rounded border border-slate-800">
-              <span className="text-[10px] text-slate-500 block">Records Read</span>
-              <span className="text-slate-100 font-bold">{indexResult.recordsConsidered}</span>
+            <div className="bg-[#172033] p-3 rounded border border-[#263449]">
+              <span className="text-[#94A3B8] block text-[11px] mb-0.5">Records Read</span>
+              <span className="text-[#F1F5F9] font-semibold text-sm">{indexResult.recordsConsidered}</span>
             </div>
-            <div className="bg-slate-950 p-2.5 rounded border border-slate-800">
-              <span className="text-[10px] text-slate-500 block">Docs Created</span>
-              <span className="text-emerald-400 font-bold">{indexResult.documentsCreated}</span>
+            <div className="bg-[#172033] p-3 rounded border border-[#263449]">
+              <span className="text-[#94A3B8] block text-[11px] mb-0.5">Docs Created</span>
+              <span className="text-emerald-400 font-semibold text-sm">{indexResult.documentsCreated}</span>
             </div>
-            <div className="bg-slate-950 p-2.5 rounded border border-slate-800">
-              <span className="text-[10px] text-slate-500 block">Docs Updated</span>
-              <span className="text-cyan-400 font-bold">{indexResult.documentsUpdated}</span>
+            <div className="bg-[#172033] p-3 rounded border border-[#263449]">
+              <span className="text-[#94A3B8] block text-[11px] mb-0.5">Docs Updated</span>
+              <span className="text-teal-400 font-semibold text-sm">{indexResult.documentsUpdated}</span>
             </div>
-            <div className="bg-slate-950 p-2.5 rounded border border-slate-800">
-              <span className="text-[10px] text-slate-500 block">Skipped</span>
-              <span className="text-amber-400 font-bold">{indexResult.skippedRecords}</span>
+            <div className="bg-[#172033] p-3 rounded border border-[#263449]">
+              <span className="text-[#94A3B8] block text-[11px] mb-0.5">Skipped</span>
+              <span className="text-amber-400 font-semibold text-sm">{indexResult.skippedRecords}</span>
             </div>
-            <div className="bg-slate-950 p-2.5 rounded border border-slate-800">
-              <span className="text-[10px] text-slate-500 block">Duration</span>
-              <span className="text-slate-300 font-bold">{indexResult.durationMillis} ms</span>
+            <div className="bg-[#172033] p-3 rounded border border-[#263449]">
+              <span className="text-[#94A3B8] block text-[11px] mb-0.5">Duration</span>
+              <span className="text-[#F1F5F9] font-semibold text-sm">{indexResult.durationMillis} ms</span>
             </div>
           </div>
         </div>
       )}
 
-
       {/* Substring Search Form */}
-      <form onSubmit={handleSearch} className="bg-slate-900/80 border border-slate-800 rounded-xl p-6 space-y-4">
+      <form onSubmit={handleSearch} className="bg-[#111827] border border-[#263449] rounded-xl p-5 space-y-4">
         <div>
-          <label className="block text-xs font-mono uppercase text-slate-400 mb-2">Search Substring Across Documents (SAM Adapter)</label>
+          <label className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-2">
+            Search Substring Across Documents (Suffix Automaton)
+          </label>
           <div className="flex gap-3">
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 text-sm text-slate-100 font-mono focus:outline-none focus:border-cyan-500/50"
-              placeholder="Enter search query..."
+              className="flex-1 bg-[#172033] border border-[#263449] rounded-lg px-3.5 py-2 text-sm text-[#F1F5F9] focus:outline-none focus:border-teal-500/50"
+              placeholder="Enter search substring..."
               required
             />
             <button
               type="submit"
               disabled={searching}
-              className="flex items-center gap-2 px-5 py-2 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/20 text-xs font-semibold transition-all disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-xs font-medium transition-colors disabled:opacity-50"
             >
               <Search className="h-4 w-4" />
-              <span>{searching ? 'Searching...' : 'Search SAM'}</span>
+              <span>{searching ? 'Searching...' : 'Search Documents'}</span>
             </button>
           </div>
         </div>
@@ -169,24 +172,26 @@ export const DocumentsPage = () => {
 
       {/* Search Results */}
       {searchResults && (
-        <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-6 space-y-4">
-          <h3 className="text-sm font-bold text-slate-200 font-mono uppercase">SAM Search Results for "{query}"</h3>
+        <div className="bg-[#111827] border border-[#263449] rounded-xl p-5 space-y-4">
+          <h3 className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider">
+            Search Results for "{query}"
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {searchResults.map((r, idx) => (
-              <div key={idx} className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+              <div key={idx} className="p-4 rounded-lg bg-[#172033] border border-[#263449] space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono font-bold text-cyan-400">{r.docIdentifier} — {r.title}</span>
+                  <span className="text-xs font-semibold text-teal-400">{r.docIdentifier} — {r.title}</span>
                   {r.found ? (
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
+                    <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
                       <CheckCircle2 className="h-3 w-3" /> MATCH
                     </span>
                   ) : (
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-500">NO MATCH</span>
+                    <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-slate-800 text-[#94A3B8]">NO MATCH</span>
                   )}
                 </div>
-                <p className="text-xs text-slate-400 font-mono">Type: {r.docType}</p>
+                <p className="text-xs text-[#94A3B8]">Type: {r.docType}</p>
                 {r.matchedSnippet && (
-                  <p className="text-xs font-mono text-emerald-300 bg-slate-900 p-2.5 rounded border border-slate-800">
+                  <p className="text-xs text-emerald-300 bg-[#0B1220] p-2.5 rounded border border-[#263449]">
                     Snippet: "...{r.matchedSnippet}..."
                   </p>
                 )}
@@ -198,32 +203,36 @@ export const DocumentsPage = () => {
 
       {/* Repeated Substrings Analysis */}
       {analysisResults && (
-        <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-6 space-y-4">
-          <h3 className="text-sm font-bold text-slate-200 font-mono uppercase text-emerald-400">Kasai Corpus Duplication Analysis</h3>
-          <div className="p-4 rounded-xl bg-slate-950 border border-emerald-500/30 space-y-2">
-            <span className="text-xs font-mono text-slate-400 block">Longest Repeated Substring Across Documents:</span>
-            <span className="text-base font-bold font-mono text-emerald-300">"{analysisResults.longestRepeatedSubstring}"</span>
-            <span className="text-xs font-mono text-slate-500 block">Length: {analysisResults.maxLcpValue} characters</span>
+        <div className="bg-[#111827] border border-[#263449] rounded-xl p-5 space-y-4">
+          <h3 className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
+            Corpus Duplication Analysis (Kasai LCP)
+          </h3>
+          <div className="p-4 rounded-lg bg-[#172033] border border-emerald-500/20 space-y-1">
+            <span className="text-xs text-[#94A3B8] block">Longest Repeated Substring Across Documents:</span>
+            <span className="text-base font-semibold text-emerald-300">"{analysisResults.longestRepeatedSubstring}"</span>
+            <span className="text-xs text-[#94A3B8] block">Length: {analysisResults.maxLcpValue} characters</span>
           </div>
         </div>
       )}
 
       {/* Database Documents List */}
-      <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-6 space-y-4">
-        <h3 className="text-sm font-bold text-slate-200 font-mono uppercase">Seeded Railway Documents ({documents.length})</h3>
+      <div className="bg-[#111827] border border-[#263449] rounded-xl p-5 space-y-4">
+        <h3 className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider">
+          Indexed Railway Documents ({documents.length})
+        </h3>
         <div className="space-y-3">
           {documents.map((doc) => (
-            <div key={doc.id} className="p-4 rounded-xl bg-slate-950 border border-slate-800/80 space-y-2">
+            <div key={doc.id} className="p-4 rounded-lg bg-[#172033] border border-[#263449] space-y-2">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <FileText className="h-4 w-4 text-cyan-400" />
-                  <span className="text-xs font-mono font-bold text-slate-200">{doc.docIdentifier}: {doc.title}</span>
+                <div className="flex items-center gap-2.5">
+                  <FileText className="h-4 w-4 text-teal-400" />
+                  <span className="text-xs font-semibold text-[#F1F5F9]">{doc.docIdentifier}: {doc.title}</span>
                 </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 text-cyan-400 border border-slate-800">
+                <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-[#0B1220] text-teal-400 border border-[#263449]">
                   {doc.docType}
                 </span>
               </div>
-              <p className="text-xs text-slate-300 font-mono bg-slate-900/60 p-3 rounded border border-slate-800">
+              <p className="text-xs text-[#94A3B8] bg-[#0B1220] p-3 rounded border border-[#263449]">
                 {doc.content}
               </p>
             </div>
@@ -233,3 +242,4 @@ export const DocumentsPage = () => {
     </div>
   );
 };
+

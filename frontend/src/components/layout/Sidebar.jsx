@@ -1,186 +1,301 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useState } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
   Building2,
-  Cpu,
-  Search,
-  Activity,
-  FileText,
-  LineChart,
-  Terminal,
-  Zap,
-  Hash,
-  Database,
-  GitCommit,
-  Binary,
-  Layers,
   Network,
-  CheckSquare,
-  Target,
-  ShieldCheck,
+  Database,
+  Search,
+  FileText,
+  Zap,
+  Cpu,
+  Settings,
+  ChevronDown,
+  ChevronRight,
+  X,
+  Train,
 } from 'lucide-react';
 
-export const Sidebar = () => {
-  const navGroups = [
+export const Sidebar = ({ isOpen, onClose }) => {
+  const location = useLocation();
+
+  const dsaModules = [
     {
-      title: 'Platform Overview',
+      id: 'm1',
+      name: 'M1 · String Algorithms',
+      path: '/dsa/m1/kmp',
+      matchPrefix: '/dsa/m1',
       items: [
-        { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-        { name: 'Station Directory', path: '/operations/stations', icon: Building2 },
-        { name: 'Railway Network', path: '/operations/network', icon: Network, tag: 'TOPOLOGY' },
-        { name: 'Railway Documents', path: '/operations/documents', icon: Database, tag: 'INDEX' },
+        { name: 'KMP Search', path: '/dsa/m1/kmp' },
+        { name: 'Z-Function', path: '/dsa/m1/z-function' },
+        { name: 'Rabin-Karp', path: '/dsa/m1/rabin-karp' },
+        { name: 'Aho-Corasick', path: '/dsa/m1/aho-corasick' },
       ],
     },
     {
-      title: 'DSA Module 1: String Algorithms (CO1)',
+      id: 'm2',
+      name: 'M2 · Suffix Structures',
+      path: '/dsa/m2/suffix-array',
+      matchPrefix: '/dsa/m2',
       items: [
-        { name: 'M1 Overview', path: '/dsa/m1', icon: Search, tag: 'CO1' },
-        { name: 'KMP Search', path: '/dsa/m1/kmp', icon: Search, tag: 'KMP' },
-        { name: 'Z-Function', path: '/dsa/m1/z-function', icon: Zap, tag: 'Z' },
-        { name: 'Rabin-Karp', path: '/dsa/m1/rabin-karp', icon: Hash, tag: 'RK' },
-        { name: 'Aho-Corasick', path: '/dsa/m1/aho-corasick', icon: Cpu, tag: 'AC' },
+        { name: 'Suffix Array', path: '/dsa/m2/suffix-array' },
+        { name: 'SA-IS (Induced)', path: '/dsa/m2/sa-is' },
+        { name: 'Kasai LCP', path: '/dsa/m2/kasai' },
+        { name: 'LCP Substring', path: '/dsa/m2/lcp' },
+        { name: 'Suffix Automaton', path: '/dsa/m2/suffix-automaton' },
       ],
     },
     {
-      title: 'DSA Module 2: Suffix Structures (CO2)',
+      id: 'm3',
+      name: 'M3 · Dynamic Programming',
+      path: '/dsa/m3/levenshtein',
+      matchPrefix: '/dsa/m3',
       items: [
-        { name: 'M2 Overview', path: '/dsa/m2', icon: FileText, tag: 'CO2' },
-        { name: 'Suffix Array', path: '/dsa/m2/suffix-array', icon: FileText, tag: 'SA' },
-        { name: 'SA-IS (Induced)', path: '/dsa/m2/sa-is', icon: Zap, tag: 'SA-IS' },
-        { name: 'Kasai LCP', path: '/dsa/m2/kasai', icon: Activity, tag: 'KASAI' },
-        { name: 'LCP Substring', path: '/dsa/m2/lcp', icon: Search, tag: 'LCP' },
-        { name: 'Suffix Automaton', path: '/dsa/m2/suffix-automaton', icon: Cpu, tag: 'SAM' },
+        { name: 'Levenshtein', path: '/dsa/m3/levenshtein' },
+        { name: 'Damerau-Levenshtein', path: '/dsa/m3/damerau' },
+        { name: 'Bitmask DP', path: '/dsa/m3/bitmask' },
+        { name: 'Matrix-Chain DP', path: '/dsa/m3/matrix-chain' },
+        { name: 'Optimal BST', path: '/dsa/m3/optimal-bst' },
       ],
     },
     {
-      title: 'DSA Module 3: Advanced DP (CO3)',
+      id: 'm4',
+      name: 'M4 · Network Flow',
+      path: '/dsa/m4/dinic',
+      matchPrefix: '/dsa/m4',
       items: [
-        { name: 'M3 Overview', path: '/dsa/m3', icon: Zap, tag: 'CO3' },
-        { name: 'Levenshtein', path: '/dsa/m3/levenshtein', icon: GitCommit, tag: 'LEV' },
-        { name: 'Damerau-Levenshtein', path: '/dsa/m3/damerau', icon: Activity, tag: 'DAM' },
-        { name: 'Bitmask DP', path: '/dsa/m3/bitmask', icon: Binary, tag: 'MASK' },
-        { name: 'Matrix-Chain DP', path: '/dsa/m3/matrix-chain', icon: Layers, tag: 'MCM' },
-        { name: 'Optimal BST', path: '/dsa/m3/optimal-bst', icon: Network, tag: 'OBST' },
+        { name: 'Ford-Fulkerson', path: '/dsa/m4/ford-fulkerson' },
+        { name: 'Edmonds-Karp', path: '/dsa/m4/edmonds-karp' },
+        { name: 'Dinic Algorithm', path: '/dsa/m4/dinic' },
+        { name: 'Bipartite Matching', path: '/dsa/m4/bipartite-matching' },
+        { name: 'König Theorem', path: '/dsa/m4/konig' },
+        { name: 'Max-Flow Min-Cut', path: '/dsa/m4/max-flow-min-cut' },
       ],
     },
     {
-      title: 'DSA Module 4: Network Flow (CO4)',
+      id: 'm5',
+      name: 'M5 · Complexity & Approximation',
+      path: '/dsa/m5/sat',
+      matchPrefix: '/dsa/m5',
       items: [
-        { name: 'M4 Overview', path: '/dsa/m4', icon: Network, tag: 'CO4' },
-        { name: 'Ford-Fulkerson', path: '/dsa/m4/ford-fulkerson', icon: GitCommit, tag: 'FF' },
-        { name: 'Edmonds-Karp', path: '/dsa/m4/edmonds-karp', icon: Activity, tag: 'EK' },
-        { name: 'Dinic Algorithm', path: '/dsa/m4/dinic', icon: Layers, tag: 'DINIC' },
-        { name: 'Bipartite Matching', path: '/dsa/m4/bipartite-matching', icon: Binary, tag: 'BIP' },
-        { name: 'König Theorem', path: '/dsa/m4/konig', icon: Network, tag: 'KONIG' },
-        { name: 'Max-Flow Min-Cut', path: '/dsa/m4/max-flow-min-cut', icon: Zap, tag: 'CUT' },
-      ],
-    },
-    {
-      title: 'DSA Module 5: NP-Completeness (CO5)',
-      items: [
-        { name: 'M5 Overview', path: '/dsa/m5', icon: Cpu, tag: 'CO5' },
-        { name: 'SAT Solver', path: '/dsa/m5/sat', icon: CheckSquare, tag: 'SAT' },
-        { name: '3-SAT Solver', path: '/dsa/m5/3sat', icon: Target, tag: '3SAT' },
-        { name: '3-SAT → CLIQUE', path: '/dsa/m5/3sat-to-clique', icon: GitCommit, tag: 'RED1' },
-        { name: 'CLIQUE → IS', path: '/dsa/m5/clique-to-independent-set', icon: Layers, tag: 'RED2' },
-        { name: 'IS → Vertex Cover', path: '/dsa/m5/independent-set-to-vertex-cover', icon: ShieldCheck, tag: 'RED3' },
-        { name: 'VC 2-Approx', path: '/dsa/m5/vertex-cover-2approx', icon: Cpu, tag: '2APX' },
-      ],
-    },
-    {
-      title: 'Future DSA Modules (CO6)',
-      items: [
-        { name: 'M6: Parallel & Random', path: '/dsa/m6', icon: LineChart, tag: 'CO6', disabled: true },
+        { name: 'SAT Solver', path: '/dsa/m5/sat' },
+        { name: '3-SAT Solver', path: '/dsa/m5/3sat' },
+        { name: '3-SAT → CLIQUE', path: '/dsa/m5/3sat-to-clique' },
+        { name: 'CLIQUE → IS', path: '/dsa/m5/clique-to-independent-set' },
+        { name: 'IS → Vertex Cover', path: '/dsa/m5/independent-set-to-vertex-cover' },
+        { name: 'VC 2-Approx', path: '/dsa/m5/vertex-cover-2approx' },
       ],
     },
   ];
 
+  // Auto expand active module based on location
+  const [expandedModules, setExpandedModules] = useState(() => {
+    const active = dsaModules.find((m) => location.pathname.startsWith(m.matchPrefix));
+    return active ? { [active.id]: true } : {};
+  });
+
+  const toggleExpand = (id) => {
+    setExpandedModules((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
   return (
-    <aside className="w-64 bg-slate-900/90 backdrop-blur border-r border-slate-800/80 flex flex-col shrink-0">
-      {/* Brand Header */}
-      <div className="h-16 flex items-center px-6 border-b border-slate-800/80 gap-3">
-        <div className="h-9 w-9 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
-          <Terminal className="h-5 w-5" />
-        </div>
-        <div>
-          <h1 className="font-bold text-lg tracking-tight bg-gradient-to-r from-slate-100 via-cyan-100 to-cyan-400 bg-clip-text text-transparent">
-            RailSync
-          </h1>
-          <p className="text-[10px] uppercase font-mono tracking-wider text-cyan-400/70 font-medium">
-            Control Center v1.0
-          </p>
-        </div>
-      </div>
+    <>
+      {/* Mobile Backdrop Overlay */}
+      {isOpen && (
+        <div
+          onClick={onClose}
+          className="fixed inset-0 bg-[#0B1220]/80 backdrop-blur-sm z-40 md:hidden transition-opacity"
+        />
+      )}
 
-      {/* Navigation */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6">
-        {navGroups.map((group, idx) => (
-          <div key={idx} className="space-y-2">
-            <h2 className="px-3 text-[11px] font-mono uppercase tracking-wider text-slate-500 font-semibold">
-              {group.title}
-            </h2>
-            <nav className="space-y-1">
-              {group.items.map((item) => {
-                const Icon = item.icon;
-                if (item.disabled) {
-                  return (
-                    <div
-                      key={item.name}
-                      className="flex items-center justify-between px-3 py-2 text-xs font-medium text-slate-600 cursor-not-allowed opacity-60 rounded-md"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <Icon className="h-4 w-4" />
-                        <span>{item.name}</span>
-                      </div>
-                      {item.tag && (
-                        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800/50 text-slate-500 border border-slate-800">
-                          {item.tag}
-                        </span>
-                      )}
-                    </div>
-                  );
-                }
-
-                return (
-                  <NavLink
-                    key={item.name}
-                    to={item.path}
-                    className={({ isActive }) =>
-                      `flex items-center justify-between px-3 py-2 text-xs font-medium rounded-md transition-all duration-150 ${
-                        isActive
-                          ? 'bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 shadow-sm shadow-cyan-500/5'
-                          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-                      }`
-                    }
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <Icon className="h-4 w-4" />
-                      <span>{item.name}</span>
-                    </div>
-                    {item.tag && (
-                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
-                        {item.tag}
-                      </span>
-                    )}
-                  </NavLink>
-                );
-              })}
-            </nav>
+      <aside
+        className={`fixed md:static inset-y-0 left-0 z-50 w-64 bg-[#111827] border-r border-[#263449] flex flex-col shrink-0 transform transition-transform duration-200 ease-in-out ${
+          isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+        }`}
+      >
+        {/* Brand Header */}
+        <div className="h-16 flex items-center justify-between px-5 border-b border-[#263449]">
+          <div className="flex items-center gap-2.5">
+            <div className="h-8 w-8 rounded bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400">
+              <Train className="h-4 w-4" />
+            </div>
+            <div>
+              <h1 className="font-bold text-base tracking-tight text-[#F1F5F9]">
+                RailSync
+              </h1>
+              <p className="text-[10px] font-mono text-[#94A3B8]">
+                Railway Operations Workbench
+              </p>
+            </div>
           </div>
-        ))}
-      </div>
-
-      {/* Footer / System Status */}
-      <div className="p-4 border-t border-slate-800/80 bg-slate-950/40">
-        <div className="flex items-center justify-between text-xs text-slate-400">
-          <span className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            System Engine
-          </span>
-          <span className="font-mono text-[10px] text-emerald-400">ONLINE</span>
+          <button
+            onClick={onClose}
+            aria-label="Close Mobile Navigation"
+            className="md:hidden p-1 rounded bg-[#172033] text-[#94A3B8] hover:text-[#F1F5F9]"
+          >
+            <X className="h-5 w-5" />
+          </button>
         </div>
-      </div>
-    </aside>
+
+        {/* Navigation */}
+        <div className="flex-1 overflow-y-auto px-3 py-5 space-y-5">
+          {/* Group 1: Overview */}
+          <div className="space-y-1">
+            <h2 className="px-3 text-[10px] font-mono uppercase tracking-wider text-[#94A3B8] font-semibold">
+              Overview
+            </h2>
+            <NavLink
+              to="/dashboard"
+              onClick={onClose}
+              className={({ isActive }) =>
+                `flex items-center gap-2.5 px-3 py-2 text-xs font-medium rounded-lg transition-colors ${
+                  isActive
+                    ? 'bg-teal-500/10 text-teal-400 font-semibold border border-teal-500/20'
+                    : 'text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#172033]'
+                }`
+              }
+            >
+              <LayoutDashboard className="h-4 w-4" />
+              <span>Dashboard</span>
+            </NavLink>
+          </div>
+
+          {/* Group 2: Railway Operations */}
+          <div className="space-y-1">
+            <h2 className="px-3 text-[10px] font-mono uppercase tracking-wider text-[#94A3B8] font-semibold">
+              Railway Operations
+            </h2>
+            <NavLink
+              to="/operations/stations"
+              onClick={onClose}
+              className={({ isActive }) =>
+                `flex items-center gap-2.5 px-3 py-2 text-xs font-medium rounded-lg transition-colors ${
+                  isActive
+                    ? 'bg-teal-500/10 text-teal-400 font-semibold border border-teal-500/20'
+                    : 'text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#172033]'
+                }`
+              }
+            >
+              <Building2 className="h-4 w-4" />
+              <span>Stations</span>
+            </NavLink>
+            <NavLink
+              to="/operations/network"
+              onClick={onClose}
+              className={({ isActive }) =>
+                `flex items-center gap-2.5 px-3 py-2 text-xs font-medium rounded-lg transition-colors ${
+                  isActive
+                    ? 'bg-teal-500/10 text-teal-400 font-semibold border border-teal-500/20'
+                    : 'text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#172033]'
+                }`
+              }
+            >
+              <Network className="h-4 w-4" />
+              <span>Network</span>
+            </NavLink>
+            <NavLink
+              to="/operations/documents"
+              onClick={onClose}
+              className={({ isActive }) =>
+                `flex items-center gap-2.5 px-3 py-2 text-xs font-medium rounded-lg transition-colors ${
+                  isActive
+                    ? 'bg-teal-500/10 text-teal-400 font-semibold border border-teal-500/20'
+                    : 'text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#172033]'
+                }`
+              }
+            >
+              <Database className="h-4 w-4" />
+              <span>Documents</span>
+            </NavLink>
+          </div>
+
+          {/* Group 3: DSA Workbench */}
+          <div className="space-y-1">
+            <h2 className="px-3 text-[10px] font-mono uppercase tracking-wider text-[#94A3B8] font-semibold">
+              DSA Workbench
+            </h2>
+            {dsaModules.map((mod) => {
+              const isModuleActive = location.pathname.startsWith(mod.matchPrefix);
+              const isExpanded = !!expandedModules[mod.id] || isModuleActive;
+
+              return (
+                <div key={mod.id} className="space-y-0.5">
+                  <div className="flex items-center justify-between">
+                    <NavLink
+                      to={mod.path}
+                      onClick={onClose}
+                      className={
+                        `flex-1 flex items-center justify-between px-3 py-2 text-xs font-medium rounded-lg transition-colors ${
+                          isModuleActive
+                            ? 'bg-teal-500/10 text-teal-400 font-semibold border border-teal-500/20'
+                            : 'text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#172033]'
+                        }`
+                      }
+                    >
+                      <span>{mod.name}</span>
+                    </NavLink>
+                    <button
+                      onClick={() => toggleExpand(mod.id)}
+                      className="p-1.5 text-[#94A3B8] hover:text-[#F1F5F9] rounded"
+                      aria-label={`Toggle ${mod.name}`}
+                    >
+                      {isExpanded ? (
+                        <ChevronDown className="h-3.5 w-3.5" />
+                      ) : (
+                        <ChevronRight className="h-3.5 w-3.5" />
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Submenu Algorithms */}
+                  {isExpanded && (
+                    <div className="pl-4 pr-1 py-1 space-y-0.5 border-l border-[#263449] ml-3">
+                      {mod.items.map((sub) => (
+                        <NavLink
+                          key={sub.name}
+                          to={sub.path}
+                          onClick={onClose}
+                          className={({ isActive }) =>
+                            `block px-2.5 py-1.5 text-[11px] font-mono rounded transition-colors ${
+                              isActive
+                                ? 'text-teal-300 font-semibold bg-[#172033]'
+                                : 'text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#172033]/60'
+                            }`
+                          }
+                        >
+                          {sub.name}
+                        </NavLink>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Group 4: System */}
+          <div className="space-y-1">
+            <h2 className="px-3 text-[10px] font-mono uppercase tracking-wider text-[#94A3B8] font-semibold">
+              System
+            </h2>
+            <NavLink
+              to="/settings"
+              onClick={onClose}
+              className={({ isActive }) =>
+                `flex items-center gap-2.5 px-3 py-2 text-xs font-medium rounded-lg transition-colors ${
+                  isActive
+                    ? 'bg-teal-500/10 text-teal-400 font-semibold border border-teal-500/20'
+                    : 'text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#172033]'
+                }`
+              }
+            >
+              <Settings className="h-4 w-4" />
+              <span>Settings</span>
+            </NavLink>
+          </div>
+        </div>
+      </aside>
+    </>
   );
 };
+
