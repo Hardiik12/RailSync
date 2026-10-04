@@ -17,6 +17,10 @@ public class StationDto {
     private final String state;
     private final Integer platformCount;
     private final String status;
+    private final String dataOrigin;
+    private final String sourceDataset;
+    private final Double latitude;
+    private final Double longitude;
     private final OffsetDateTime createdAt;
     private final OffsetDateTime updatedAt;
 
@@ -30,6 +34,10 @@ public class StationDto {
                 .state(entity.getState())
                 .platformCount(entity.getPlatformCount())
                 .status(entity.getStatus())
+                .dataOrigin(entity.getDataOrigin())
+                .sourceDataset(entity.getSourceDataset())
+                .latitude(entity.getLatitude())
+                .longitude(entity.getLongitude())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .build();
