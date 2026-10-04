@@ -31,3 +31,8 @@ export const searchDocuments = async (query) => {
 export const analyzeDocumentRepeatedSubstrings = async () => {
   return apiClient.post('/documents/repeated-substrings', {});
 };
+
+export const indexStationDocuments = async () => {
+  return apiClient.post('/m2/documents/index-stations', {});
+};
+
