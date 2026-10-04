@@ -36,6 +36,8 @@ import { CliqueToISPage } from './pages/CliqueToISPage';
 import { ISToVCPage } from './pages/ISToVCPage';
 import { VertexCoverApproxPage } from './pages/VertexCoverApproxPage';
 
+import { NetworkPage } from './pages/NetworkPage';
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -44,6 +46,7 @@ export default function App() {
           <Route index element={<DashboardPage />} />
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="operations/stations" element={<StationsPage />} />
+          <Route path="operations/network" element={<NetworkPage />} />
           <Route path="operations/documents" element={<DocumentsPage />} />
           
           {/* Module 1 */}
