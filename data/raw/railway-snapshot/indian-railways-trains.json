@@ -1,0 +1,42 @@
+[
+  {
+    "trainNumber": "12951",
+    "trainName": "Mumbai Rajdhani Express",
+    "trainType": "RAJDHANI",
+    "sourceStationCode": "NDLS",
+    "destinationStationCode": "CSMT",
+    "runningDays": ["DAILY"],
+    "distanceKm": 1384.0,
+    "stops": [
+      { "stationCode": "NDLS", "sequenceOrder": 1, "arrivalTime": "16:55", "departureTime": "16:55", "distanceKm": 0.0 },
+      { "stationCode": "ADI", "sequenceOrder": 2, "arrivalTime": "03:15", "departureTime": "03:25", "distanceKm": 934.0 },
+      { "stationCode": "CSMT", "sequenceOrder": 3, "arrivalTime": "08:35", "departureTime": "08:35", "distanceKm": 1384.0 }
+    ]
+  },
+  {
+    "trainNumber": "12002",
+    "trainName": "Bhopal Shatabdi Express",
+    "trainType": "SHATABDI",
+    "sourceStationCode": "NDLS",
+    "destinationStationCode": "PUNE",
+    "runningDays": ["DAILY"],
+    "distanceKm": 1420.0,
+    "stops": [
+      { "stationCode": "NDLS", "sequenceOrder": 1, "arrivalTime": "06:00", "departureTime": "06:00", "distanceKm": 0.0 },
+      { "stationCode": "PUNE", "sequenceOrder": 2, "arrivalTime": "22:15", "departureTime": "22:15", "distanceKm": 1420.0 }
+    ]
+  },
+  {
+    "trainNumber": "22436",
+    "trainName": "Vande Bharat Express",
+    "trainType": "VANDE_BHARAT",
+    "sourceStationCode": "NDLS",
+    "destinationStationCode": "PNBE",
+    "runningDays": ["MON", "TUE", "WED", "FRI", "SAT", "SUN"],
+    "distanceKm": 998.0,
+    "stops": [
+      { "stationCode": "NDLS", "sequenceOrder": 1, "arrivalTime": "06:00", "departureTime": "06:00", "distanceKm": 0.0 },
+      { "stationCode": "PNBE", "sequenceOrder": 2, "arrivalTime": "14:00", "departureTime": "14:00", "distanceKm": 998.0 }
+    ]
+  }
+]

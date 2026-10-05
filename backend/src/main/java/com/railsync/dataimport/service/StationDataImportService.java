@@ -5,9 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.railsync.common.error.ApiException;
 import com.railsync.common.error.ErrorCode;
 import com.railsync.dataimport.dto.ImportResult;
+import com.railsync.dataimport.dto.InspectionReport;
+import com.railsync.dataimport.dto.RawStationRecord;
+import com.railsync.dataimport.inspector.DatasetInspector;
+import com.railsync.dataimport.normalizer.StationNormalizer;
 import com.railsync.station.entity.Station;
 import com.railsync.station.repository.StationRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,12 +18,105 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class StationDataImportService {
 
     private final StationRepository stationRepository;
     private final ObjectMapper objectMapper;
+    private final DatasetInspector datasetInspector;
+    private final StationNormalizer stationNormalizer;
+
+    public StationDataImportService(StationRepository stationRepository, ObjectMapper objectMapper) {
+        this(stationRepository, objectMapper, new DatasetInspector(), new StationNormalizer());
+    }
+
+    public StationDataImportService(StationRepository stationRepository,
+                                    ObjectMapper objectMapper,
+                                    DatasetInspector datasetInspector,
+                                    StationNormalizer stationNormalizer) {
+        this.stationRepository = stationRepository;
+        this.objectMapper = objectMapper;
+        this.datasetInspector = datasetInspector != null ? datasetInspector : new DatasetInspector();
+        this.stationNormalizer = stationNormalizer != null ? stationNormalizer : new StationNormalizer();
+    }
+
+    @Transactional
+    public ImportResult importRawStations(List<RawStationRecord> rawRecords, String sourceDataset) {
+        long startTime = System.currentTimeMillis();
+        if (rawRecords == null || rawRecords.isEmpty()) {
+            return ImportResult.builder()
+                    .source(sourceDataset != null ? sourceDataset : "PUBLIC_DATASET")
+                    .recordsRead(0)
+                    .recordsInserted(0)
+                    .recordsUpdated(0)
+                    .duplicates(0)
+                    .invalidRecords(0)
+                    .durationMillis(0)
+                    .build();
+        }
+
+        InspectionReport inspection = datasetInspector.inspectStations(rawRecords);
+
+        int recordsInserted = 0;
+        int recordsUpdated = 0;
+        int duplicates = 0;
+        int invalidRecords = 0;
+
+        Set<String> processedBatchCodes = new HashSet<>();
+
+        for (RawStationRecord raw : rawRecords) {
+            if (raw == null || raw.getStationCode() == null || raw.getStationCode().isBlank() ||
+                raw.getName() == null || raw.getName().isBlank() ||
+                raw.getLatitude() == null || raw.getLongitude() == null ||
+                raw.getLatitude() < -90.0 || raw.getLatitude() > 90.0 ||
+                raw.getLongitude() < -180.0 || raw.getLongitude() > 180.0) {
+                invalidRecords++;
+                continue;
+            }
+
+            String codeKey = raw.getStationCode().trim().toUpperCase();
+
+            if (processedBatchCodes.contains(codeKey)) {
+                duplicates++;
+                continue;
+            }
+            processedBatchCodes.add(codeKey);
+
+            Station normalized = stationNormalizer.normalize(raw, sourceDataset);
+            Optional<Station> existingOpt = stationRepository.findByStationCode(codeKey);
+
+            if (existingOpt.isPresent()) {
+                Station existing = existingOpt.get();
+                existing.setName(normalized.getName());
+                existing.setCity(normalized.getCity());
+                existing.setState(normalized.getState());
+                existing.setPlatformCount(normalized.getPlatformCount());
+                existing.setStatus(normalized.getStatus());
+                existing.setDataOrigin("PUBLIC_DATA");
+                existing.setSourceDataset(normalized.getSourceDataset());
+                existing.setLatitude(normalized.getLatitude());
+                existing.setLongitude(normalized.getLongitude());
+                stationRepository.save(existing);
+                recordsUpdated++;
+            } else {
+                stationRepository.save(normalized);
+                recordsInserted++;
+            }
+        }
+
+        long durationMillis = System.currentTimeMillis() - startTime;
+        return ImportResult.builder()
+                .source(sourceDataset != null ? sourceDataset : "PUBLIC_DATASET")
+                .recordsRead(rawRecords.size())
+                .recordsInserted(recordsInserted)
+                .recordsUpdated(recordsUpdated)
+                .duplicates(duplicates)
+                .invalidRecords(invalidRecords)
+                .warnings(inspection.getWarnings())
+                .errors(inspection.getErrors())
+                .durationMillis(durationMillis)
+                .build();
+    }
 
     @Transactional
     public ImportResult importGeoJsonStations(String geoJsonContent) {
@@ -41,40 +137,24 @@ public class StationDataImportService {
             throw new ApiException(ErrorCode.INVALID_INPUT, "GeoJSON must contain a 'features' array");
         }
 
-        int recordsRead = featuresNode.size();
-        int recordsInserted = 0;
-        int recordsUpdated = 0;
-        int duplicates = 0;
-        int invalidRecords = 0;
-
-        Set<String> processedBatchCodes = new HashSet<>();
-
+        List<RawStationRecord> rawRecords = new ArrayList<>();
         for (JsonNode feature : featuresNode) {
             JsonNode properties = feature.get("properties");
             JsonNode geometry = feature.get("geometry");
 
             if (properties == null || geometry == null) {
-                invalidRecords++;
+                rawRecords.add(null);
                 continue;
             }
 
             String stationCode = extractProperty(properties, "stationCode", "STATION_CODE", "code", "STATION_CD");
             String name = extractProperty(properties, "name", "STATION_NAME", "name_en");
             String city = extractProperty(properties, "city", "CITY");
-            if (city == null || city.isBlank()) city = (name != null ? name : "UNKNOWN");
             String state = extractProperty(properties, "state", "STATE");
-            if (state == null || state.isBlank()) state = "UNKNOWN";
-
             String status = extractProperty(properties, "status", "STATUS");
-            if (status == null || status.isBlank()) status = "ACTIVE";
-
             Integer platformCount = extractIntProperty(properties, "platformCount", "PLATFORM_COUNT", "platforms");
-            if (platformCount == null || platformCount <= 0) platformCount = 1;
-
             String sourceDataset = extractProperty(properties, "sourceDataset", "SOURCE_DATASET", "source");
-            if (sourceDataset == null || sourceDataset.isBlank()) sourceDataset = "PUBLIC_GEOJSON";
 
-            // Geometry coordinates: Point [longitude, latitude]
             Double longitude = null;
             Double latitude = null;
             if (geometry.has("coordinates") && geometry.get("coordinates").isArray()) {
@@ -85,65 +165,22 @@ public class StationDataImportService {
                 }
             }
 
-            // Validate mandatory fields
-            if (stationCode == null || stationCode.isBlank() || name == null || name.isBlank() ||
-                latitude == null || longitude == null ||
-                latitude < -90.0 || latitude > 90.0 || longitude < -180.0 || longitude > 180.0) {
-                invalidRecords++;
-                continue;
-            }
-
-            String codeKey = stationCode.trim().toUpperCase();
-
-            // Check intra-batch duplicate
-            if (processedBatchCodes.contains(codeKey)) {
-                duplicates++;
-                continue;
-            }
-            processedBatchCodes.add(codeKey);
-
-            // Database lookup
-            Optional<Station> existingOpt = stationRepository.findByStationCode(codeKey);
-            if (existingOpt.isPresent()) {
-                Station existing = existingOpt.get();
-                existing.setName(name.trim());
-                existing.setCity(city.trim());
-                existing.setState(state.trim());
-                existing.setPlatformCount(platformCount);
-                existing.setStatus(status.trim().toUpperCase());
-                existing.setDataOrigin("PUBLIC_DATA");
-                existing.setSourceDataset(sourceDataset.trim());
-                existing.setLatitude(latitude);
-                existing.setLongitude(longitude);
-                stationRepository.save(existing);
-                recordsUpdated++;
-            } else {
-                Station newStation = Station.builder()
-                        .stationCode(codeKey)
-                        .name(name.trim())
-                        .city(city.trim())
-                        .state(state.trim())
-                        .platformCount(platformCount)
-                        .status(status.trim().toUpperCase())
-                        .dataOrigin("PUBLIC_DATA")
-                        .sourceDataset(sourceDataset.trim())
-                        .latitude(latitude)
-                        .longitude(longitude)
-                        .build();
-                stationRepository.save(newStation);
-                recordsInserted++;
-            }
+            rawRecords.add(RawStationRecord.builder()
+                    .stationCode(stationCode)
+                    .name(name)
+                    .city(city)
+                    .state(state)
+                    .status(status)
+                    .platformCount(platformCount)
+                    .sourceDataset(sourceDataset)
+                    .latitude(latitude)
+                    .longitude(longitude)
+                    .build());
         }
 
-        long durationMillis = System.currentTimeMillis() - startTime;
-        return ImportResult.builder()
-                .recordsRead(recordsRead)
-                .recordsInserted(recordsInserted)
-                .recordsUpdated(recordsUpdated)
-                .duplicates(duplicates)
-                .invalidRecords(invalidRecords)
-                .durationMillis(durationMillis)
-                .build();
+        ImportResult result = importRawStations(rawRecords, "PUBLIC_GEOJSON");
+        result.setDurationMillis(System.currentTimeMillis() - startTime);
+        return result;
     }
 
     private String extractProperty(JsonNode props, String... keys) {

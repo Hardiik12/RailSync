@@ -1,0 +1,127 @@
+{
+  "type": "FeatureCollection",
+  "source": "Indian Railways Public Timetable Snapshot",
+  "snapshotDate": "2026-10-05",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [77.2197, 28.6430] },
+      "properties": {
+        "stationCode": "NDLS",
+        "name": "New Delhi Railway Station",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "platformCount": 16,
+        "sourceDataset": "PUBLIC_GEOJSON_V1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [72.8347, 18.9398] },
+      "properties": {
+        "stationCode": "CSMT",
+        "name": "Chhatrapati Shivaji Maharaj Terminus",
+        "city": "Mumbai",
+        "state": "Maharashtra",
+        "platformCount": 18,
+        "sourceDataset": "PUBLIC_GEOJSON_V1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [88.3426, 22.5830] },
+      "properties": {
+        "stationCode": "HWH",
+        "name": "Howrah Junction",
+        "city": "Kolkata",
+        "state": "West Bengal",
+        "platformCount": 23,
+        "sourceDataset": "PUBLIC_GEOJSON_V1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [80.2755, 13.0827] },
+      "properties": {
+        "stationCode": "MAS",
+        "name": "Puratchi Thalaivar Dr. M.G. Ramachandran Central Railway Station",
+        "city": "Chennai",
+        "state": "Tamil Nadu",
+        "platformCount": 12,
+        "sourceDataset": "PUBLIC_GEOJSON_V1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [77.6094, 12.9781] },
+      "properties": {
+        "stationCode": "SBC",
+        "name": "KSR Bengaluru City Junction",
+        "city": "Bengaluru",
+        "state": "Karnataka",
+        "platformCount": 10,
+        "sourceDataset": "PUBLIC_GEOJSON_V1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [78.5024, 17.4339] },
+      "properties": {
+        "stationCode": "SC",
+        "name": "Secunderabad Junction",
+        "city": "Hyderabad",
+        "state": "Telangana",
+        "platformCount": 10,
+        "sourceDataset": "PUBLIC_GEOJSON_V1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [72.5714, 23.0225] },
+      "properties": {
+        "stationCode": "ADI",
+        "name": "Ahmedabad Junction",
+        "city": "Ahmedabad",
+        "state": "Gujarat",
+        "platformCount": 12,
+        "sourceDataset": "PUBLIC_GEOJSON_V1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [80.6480, 16.5062] },
+      "properties": {
+        "stationCode": "BZA",
+        "name": "Vijayawada Junction",
+        "city": "Vijayawada",
+        "state": "Andhra Pradesh",
+        "platformCount": 10,
+        "sourceDataset": "PUBLIC_GEOJSON_V1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [85.1376, 25.6110] },
+      "properties": {
+        "stationCode": "PNBE",
+        "name": "Patna Junction",
+        "city": "Patna",
+        "state": "Bihar",
+        "platformCount": 10,
+        "sourceDataset": "PUBLIC_GEOJSON_V1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [73.8567, 18.5204] },
+      "properties": {
+        "stationCode": "PUNE",
+        "name": "Pune Junction",
+        "city": "Pune",
+        "state": "Maharashtra",
+        "platformCount": 6,
+        "sourceDataset": "PUBLIC_GEOJSON_V1"
+      }
+    }
+  ]
+}

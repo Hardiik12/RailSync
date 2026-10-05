@@ -1,0 +1,35 @@
+[
+  {
+    "stationCode": "NDLS",
+    "name": "New Delhi Railway Station",
+    "city": "New Delhi",
+    "state": "Delhi",
+    "platformCount": 16,
+    "status": "ACTIVE",
+    "latitude": 28.6430,
+    "longitude": 77.2197,
+    "sourceDataset": "PUBLIC_DATASET_V1"
+  },
+  {
+    "stationCode": "CSMT",
+    "name": "Chhatrapati Shivaji Maharaj Terminus",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "platformCount": 18,
+    "status": "ACTIVE",
+    "latitude": 18.9398,
+    "longitude": 72.8347,
+    "sourceDataset": "PUBLIC_DATASET_V1"
+  },
+  {
+    "stationCode": "HWH",
+    "name": "Howrah Junction",
+    "city": "Kolkata",
+    "state": "West Bengal",
+    "platformCount": 23,
+    "status": "ACTIVE",
+    "latitude": 22.5830,
+    "longitude": 88.3426,
+    "sourceDataset": "PUBLIC_DATASET_V1"
+  }
+]

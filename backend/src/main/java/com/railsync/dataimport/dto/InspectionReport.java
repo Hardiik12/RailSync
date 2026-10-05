@@ -12,19 +12,13 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ImportResult {
-    @Builder.Default
-    private String source = "PUBLIC_RAILWAY_DATASET";
-    
-    @Builder.Default
-    private String snapshotDate = "2026-10-05";
-
-    private int recordsRead;
-    private int recordsInserted;
-    private int recordsUpdated;
-    private int duplicates;
-    private int invalidRecords;
-    private long durationMillis;
+public class InspectionReport {
+    private int totalRecords;
+    private int validRecords;
+    private int duplicateIdentifiers;
+    private int missingRequiredFields;
+    private int invalidCoordinates;
+    private int invalidStationReferences;
 
     @Builder.Default
     private List<String> warnings = new ArrayList<>();
