@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Server, Database, Menu, Train } from 'lucide-react';
-import { fetchStations } from '../../api/stationApi';
+import { fetchStations } from '../../api/stationsApi';
 
 export const Topbar = ({ onToggleSidebar }) => {
   const [isBackendOnline, setIsBackendOnline] = useState(null);
