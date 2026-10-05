@@ -26,6 +26,13 @@ public class ImportResult {
     private int invalidRecords;
     private long durationMillis;
 
+    private int tripsRead;
+    private int tripsCreated;
+    private int tripsUpdated;
+    private int stopTimesRead;
+    private int stopTimesCreated;
+    private int stopTimesUpdated;
+
     @Builder.Default
     private List<String> warnings = new ArrayList<>();
 

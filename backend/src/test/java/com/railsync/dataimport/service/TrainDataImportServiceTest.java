@@ -9,9 +9,8 @@ import com.railsync.station.entity.Station;
 import com.railsync.station.repository.StationRepository;
 import com.railsync.train.entity.Route;
 import com.railsync.train.entity.Train;
-import com.railsync.train.repository.RouteRepository;
-import com.railsync.train.repository.RouteStopRepository;
-import com.railsync.train.repository.TrainRepository;
+import com.railsync.train.entity.Trip;
+import com.railsync.train.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +38,10 @@ class TrainDataImportServiceTest {
     private RouteRepository routeRepository;
     @Mock
     private RouteStopRepository routeStopRepository;
+    @Mock
+    private TripRepository tripRepository;
+    @Mock
+    private StopTimeRepository stopTimeRepository;
 
     private TrainDataImportService importService;
 
@@ -48,13 +52,15 @@ class TrainDataImportServiceTest {
                 stationRepository,
                 routeRepository,
                 routeStopRepository,
+                tripRepository,
+                stopTimeRepository,
                 new TrainNormalizer(),
                 new ObjectMapper()
         );
     }
 
     @Test
-    @DisplayName("Successfully process raw train records with route stops and station resolution")
+    @DisplayName("Successfully process raw train records with route stops, trips, and stop times")
     void testTrainImportSuccess() {
         Station ndls = Station.builder().id(1L).stationCode("NDLS").name("New Delhi").build();
         Station csmt = Station.builder().id(2L).stationCode("CSMT").name("Mumbai CSMT").build();
@@ -69,6 +75,10 @@ class TrainDataImportServiceTest {
         Route savedRoute = Route.builder().id(20L).train(savedTrain).build();
         when(routeRepository.findByTrainId(10L)).thenReturn(Collections.emptyList());
         when(routeRepository.save(any(Route.class))).thenReturn(savedRoute);
+
+        Trip savedTrip = Trip.builder().id(30L).train(savedTrain).serviceDate(LocalDate.now()).build();
+        when(tripRepository.findByTrainIdAndServiceDate(eq(10L), any())).thenReturn(Optional.empty());
+        when(tripRepository.save(any(Trip.class))).thenReturn(savedTrip);
 
         RawTrainRecord raw = RawTrainRecord.builder()
                 .trainNumber("12951")
@@ -86,12 +96,15 @@ class TrainDataImportServiceTest {
 
         assertThat(result.getRecordsRead()).isEqualTo(1);
         assertThat(result.getRecordsInserted()).isEqualTo(1);
+        assertThat(result.getTripsCreated()).isEqualTo(1);
+        assertThat(result.getStopTimesCreated()).isEqualTo(2);
         assertThat(result.getInvalidRecords()).isEqualTo(0);
         assertThat(result.getDuplicates()).isEqualTo(0);
 
         verify(trainRepository, times(1)).save(any(Train.class));
         verify(routeRepository, times(1)).save(any(Route.class));
         verify(routeStopRepository, times(1)).saveAll(any());
+        verify(stopTimeRepository, times(1)).saveAll(any());
     }
 
     @Test
@@ -112,5 +125,15 @@ class TrainDataImportServiceTest {
         assertThat(result.getRecordsInserted()).isEqualTo(0);
         assertThat(result.getInvalidRecords()).isEqualTo(1);
         assertThat(result.getErrors()).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("Verify calculated dwell minutes from arrival and departure times")
+    void testCalculateDwellMinutes() {
+        assertThat(TrainDataImportService.calculateDwellMinutes("16:55", "16:55")).isEqualTo(0);
+        assertThat(TrainDataImportService.calculateDwellMinutes("03:15", "03:25")).isEqualTo(10);
+        assertThat(TrainDataImportService.calculateDwellMinutes("23:55", "00:05")).isEqualTo(10);
+        assertThat(TrainDataImportService.calculateDwellMinutes(null, "16:55")).isNull();
+        assertThat(TrainDataImportService.calculateDwellMinutes("invalid", "16:55")).isNull();
     }
 }
