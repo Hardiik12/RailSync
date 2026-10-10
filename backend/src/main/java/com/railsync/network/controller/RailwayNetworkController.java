@@ -42,6 +42,12 @@ public class RailwayNetworkController {
         return ResponseEntity.ok(ApiResponse.success(summary));
     }
 
+    @PostMapping("/sync-routes")
+    public ResponseEntity<ApiResponse<NetworkSummaryDto>> syncRouteTopology() {
+        NetworkSummaryDto summary = railwayNetworkService.syncRouteTopology();
+        return ResponseEntity.ok(ApiResponse.success(summary));
+    }
+
     @PostMapping("/edges")
     public ResponseEntity<ApiResponse<NetworkEdgeDto>> createEdge(@RequestBody CreateNetworkEdgeRequest request) {
         NetworkEdgeDto edge = railwayNetworkService.createNetworkEdge(request);
@@ -51,6 +57,12 @@ public class RailwayNetworkController {
     @PostMapping("/flow")
     public ResponseEntity<ApiResponse<NetworkFlowResponse>> solveFlow(@RequestBody NetworkFlowRequest request) {
         NetworkFlowResponse response = railwayNetworkService.solveNetworkFlow(request);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @PostMapping("/bottleneck")
+    public ResponseEntity<ApiResponse<BottleneckAnalysisResponse>> analyzeBottleneck(@RequestBody BottleneckAnalysisRequest request) {
+        BottleneckAnalysisResponse response = railwayNetworkService.analyzeBottleneck(request);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 }
